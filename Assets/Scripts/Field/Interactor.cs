@@ -50,4 +50,20 @@ public class Interactor : MonoBehaviour
             interactable?.Interact();
         }
     }
+
+    // Dialogを進める
+    public void OnMessageNext(InputValue value)
+    {
+        // ボタンが押されてなかったら何もしない
+        if (!value.isPressed)
+        {
+            return;
+        }
+        // ダイアログが表示されていたら
+        if (GameState.IsDialogOpen)
+        {
+            // 次の行に進んでもらう。
+            DialogUI.Instance.Next();
+        }
+    }
 }

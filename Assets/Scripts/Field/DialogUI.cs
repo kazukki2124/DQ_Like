@@ -20,6 +20,11 @@ public class DialogUI : MonoBehaviour
     public GameObject NextHint;
 
     /// <summary>
+    /// はい、いいえボタンの変数
+    /// </summary>
+    public GameObject YesNoButtonBG;
+
+    /// <summary>
     /// 1文字を待つ時間
     /// </summary>
     private float charInterval = 0.15f;
@@ -67,6 +72,9 @@ public class DialogUI : MonoBehaviour
             return;
         }
 
+        // boolの値を直接GameObjectのActivの値に変更する
+        YesNoButtonBG.SetActive(dialogData.ShowYesNo);
+
         GameState.IsDialogOpen = true;
 
         NameText.text = dialogData.Speaker;
@@ -84,6 +92,9 @@ public class DialogUI : MonoBehaviour
     /// </summary>
     public void Close()
     {
+        // まず文字送りを止めて
+        StopTypingIfNeeded();
+
         GameState.IsDialogOpen = false;
         Panel.SetActive(false);
         if (NextHint != null)
@@ -131,6 +142,8 @@ public class DialogUI : MonoBehaviour
     /// <param name="index"></param>
     private void ShowLine(int index)
     {
+        // まず文字送りを止めて
+        StopTypingIfNeeded();
         // いま表示されているものを空にします
         MessageText.text = string.Empty;
         // ▼などの送り表示のオブジェクトがあれば表示します
@@ -163,7 +176,7 @@ public class DialogUI : MonoBehaviour
             NextHint.SetActive(true);
         }
         // 自動で次の行へ行くように
-        Next();
+        //Next();
         typingCoroutine = null;
     }
 
@@ -173,6 +186,8 @@ public class DialogUI : MonoBehaviour
         {
             return;
         }
+        // まず文字送りをとめて
+        StopTypingIfNeeded();
         // 現在の行を全て表示
         MessageText.text = currentLines[lineIndex];
         // 文字送り中じゃなくす
@@ -181,6 +196,18 @@ public class DialogUI : MonoBehaviour
         {
             NextHint.SetActive(true);
         }
+    }
+
+    /// <summary>
+    /// 必要だったら文字送りを止める
+    /// </summary>
+    private void StopTypingIfNeeded()
+    {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+        isTyping = false;
     }
     public void OnYes()
     {

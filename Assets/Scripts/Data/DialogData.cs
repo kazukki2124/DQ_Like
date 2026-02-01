@@ -25,8 +25,4 @@ public class DialogData : ScriptableObject
     /// </summary>
     public string SetFlagOnYes;
 
-    /// <summary>
-    /// ノーを押したときのゲーム進行上のフラグ
-    /// </summary>
-    public string SetFlagOnNo;
 }

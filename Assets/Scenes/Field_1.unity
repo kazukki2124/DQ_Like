@@ -663,7 +663,8 @@ MonoBehaviour:
   Panel: {fileID: 687412694}
   NameText: {fileID: 1479922919}
   MessageText: {fileID: 1593680822}
-  NextHint: {fileID: 0}
+  NextHint: {fileID: 17818950}
+  YesNoButtonBG: {fileID: 523131949}
 --- !u!1 &480144925
 GameObject:
   m_ObjectHideFlags: 0
