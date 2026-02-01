@@ -44,6 +44,12 @@ public class PlayerController : MonoBehaviour
     // 毎フレーム実行される処理を書く場所
     void Update()
     {
+        // ダイアログがOpenしていたら何もしない
+        if (GameState.IsDialogOpen)
+        {
+            return;
+        }
+
         Move();
         ApplyGravity();
     }
