@@ -272,6 +272,21 @@ public class DialogUI : MonoBehaviour
         }
         isTyping = false;
     }
+
+    /// <summary>
+    /// ダイアログUIが開いていたら次の行を表示する
+    /// </summary>
+    /// <returns></returns>
+    public bool TryNextIfOpen()
+    {
+        if (!Panel.activeSelf)
+        {
+            return false;
+        }
+        Next();
+        return true;
+    }
+
     public void OnYes()
     {
         Close();

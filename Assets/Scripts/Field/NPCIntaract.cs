@@ -16,6 +16,13 @@ public class NPCIntaract : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        // 既にダイアログ表示中なら「次へ進む」
+        if(DialogUI.Instance != null &&
+            DialogUI.Instance.TryNextIfOpen())
+        {
+            return;
+        }
+
         // 鍵を持って話しかけた場合
         if (QuestFlag.HasKey)
         {
