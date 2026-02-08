@@ -119,6 +119,38 @@ public class DialogUI : MonoBehaviour
     }
 
     /// <summary>
+    /// 外部からアイテム取得のダイアログを見せる
+    /// </summary>
+    /// <param name="name">名前</param>
+    /// <param name="message">本文</param>
+    public void ShowSimpleMessage(string simpleMessage)
+    {
+        // DialogMessageが無かったら
+        if (simpleMessage == string.Empty)
+        {
+            Debug.LogWarning("SimpleMessageがないです");
+            return;
+        }
+
+        // YesNoボタンは表示しません
+        YesNoButtonBG.SetActive(false);
+
+        GameState.IsDialogOpen = true;
+
+        NameText.text = string.Empty;
+
+        string[] itemLines_HasKey = new string[2];
+        itemLines_HasKey[0] = $"宝箱をみつけた！";
+        itemLines_HasKey[1] = $"しかし鍵がかかっているようだ・・・";
+        currentLines = itemLines_HasKey;
+        lineIndex = 0;
+
+        Panel.SetActive(true);
+        // 現在の行を表示していく
+        ShowLine(lineIndex);
+    }
+
+    /// <summary>
     /// UIのCloseボタンから呼びます
     /// </summary>
     public void Close()

@@ -11,4 +11,14 @@ public static class QuestFlag
     /// 宝箱Aを開けたかのフラグ
     /// </summary>
     public static bool OpendChestA = false;
+    
+    /// <summary>
+    /// 宝箱Bを開けたかのフラグ
+    /// </summary>
+    public static bool OpendChestB = false;
+
+    /// <summary>
+    /// 万能鍵を持っているか
+    /// </summary>
+    public static bool HasKey = false;
 }

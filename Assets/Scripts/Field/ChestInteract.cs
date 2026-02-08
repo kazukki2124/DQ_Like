@@ -13,6 +13,9 @@ public class ChestInteract : MonoBehaviour,IInteractable
     [Header("状態")]
     public bool IsOpened = false;
 
+    [Header("鍵がないと開かない")]
+    public bool IsLocked = false;
+
     [Header("当たり判定")]
     public Collider InteractCollider;
 
@@ -37,9 +40,15 @@ public class ChestInteract : MonoBehaviour,IInteractable
         {
             return;
         }
-        if (QuestFlag.OpendChestA)
+        // 施錠されていて
+        if (IsLocked)
         {
-            return;
+            // 万能鍵が無かったら何もしない
+            if (!QuestFlag.HasKey)
+            {
+                DialogUI.Instance.ShowSimpleMessage(RewardItem.ItemName);
+                return;
+            }
         }
         StartCoroutine(OpenRoutine());
     }
@@ -47,7 +56,18 @@ public class ChestInteract : MonoBehaviour,IInteractable
     private IEnumerator OpenRoutine()
     {
         IsOpened = true;
-        QuestFlag.OpendChestA = true;
+        // 設定されているitemDataが万能鍵だった場合
+        if(RewardItem != null &&
+           RewardItem.ItemName == "万能鍵")
+        {
+            QuestFlag.OpendChestB = true;
+            QuestFlag.HasKey = true;
+        }
+        else
+        {
+            QuestFlag.OpendChestA = true;
+        }
+        
 
         // 連打防止：当たり判定を切る
         if(InteractCollider != null)
