@@ -4,9 +4,9 @@ using TMPro;
 
 public enum BattleMenuState
 {
-    Root,   // ‚½‚½‚©‚¤/‚³‚­‚¹‚ñ/‚É‚°‚é
-    Fight,  // ‚±‚¤‚°‚«/‚¶‚ã‚à‚ñ/‚Æ‚­‚¬/‚Ú‚¤‚¬‚å
-    Busy    // ‰‰o’†(“ü—Í•s‰Â)
+    Root,   // ãŸãŸã‹ã†/ã•ãã›ã‚“/ã«ã’ã‚‹
+    Fight,  // ã“ã†ã’ã/ã˜ã‚…ã‚‚ã‚“/ã¨ãã/ã¼ã†ãã‚‡
+    Busy    // æ¼”å‡ºä¸­(å…¥åŠ›ä¸å¯)
 }
 
 public class BattleManager : MonoBehaviour
@@ -20,6 +20,7 @@ public class BattleManager : MonoBehaviour
     [Header("Enemy Visual")]
     public Transform EnemyModelRoot;
     private GameObject enemyModelInstance;
+    private Animator enemyAnimator;
 
     [Header("PlayerData")]
     public float PlayerMaxHP = 30f;
@@ -57,17 +58,17 @@ public class BattleManager : MonoBehaviour
         UpdateUI();
 
         BuildRootMenu();
-        // í“¬‚ÌŠJn‚ÉŒÄ‚Ño‚·
+        // æˆ¦é—˜ã®é–‹å§‹æ™‚ã«å‘¼ã³å‡ºã™
         SpawnEnemy();
         DialogText.text =
-            $"{currentEnemy.DisplayName}‚ªŒ»‚ê‚½I";
+            $"{currentEnemy.DisplayName}ãŒç¾ã‚ŒãŸï¼";
     }
 
     private void SetupEnemyFromDB()
     {
         if (EnemyDB == null)
         {
-            Debug.LogError("EnemyDB‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+            Debug.LogError("EnemyDBãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
             return;
         }
 
@@ -75,7 +76,7 @@ public class BattleManager : MonoBehaviour
 
         if (currentEnemy == null)
         {
-            Debug.LogError("NextEnemyID‚ªEnemyDB‚ÉŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.LogError("NextEnemyIDãŒEnemyDBã«è¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
             return;
         }
 
@@ -83,7 +84,7 @@ public class BattleManager : MonoBehaviour
     }
 
     /// <summary>
-    /// “G‚ÌVisual‚ğ¶¬
+    /// æ•µã®Visualã‚’ç”Ÿæˆ
     /// </summary>
     private void SpawnEnemy()
     {
@@ -99,15 +100,18 @@ public class BattleManager : MonoBehaviour
         {
             return;
         }
-        // ƒQ[ƒ€ŠJn‚ÉŠù‚É“G‚Ìƒ‚ƒfƒ‹‚ª‚ ‚Á‚½ê‡Aíœ
+        // ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã«æ—¢ã«æ•µã®ãƒ¢ãƒ‡ãƒ«ãŒã‚ã£ãŸå ´åˆã€å‰Šé™¤
         if (enemyModelInstance != null)
         {
             Destroy(enemyModelInstance);
         }
-        // Instantiate‚ğg‚Á‚ÄA“G‚Ìƒ‚ƒfƒ‹‚ğAEnemyModelRoot‚É¶¬
+        // Instantiateã‚’ä½¿ã£ã¦ã€æ•µã®ãƒ¢ãƒ‡ãƒ«ã‚’ã€EnemyModelRootã«ç”Ÿæˆ
         enemyModelInstance = Instantiate(currentEnemy.ModelPrefab,
             EnemyModelRoot);
-        // “G‚ÌˆÊ’uî•ñ‚ğİ’è
+        // æ•µã®Animatorã‚’å–å¾—
+        enemyAnimator = enemyModelInstance.GetComponentInChildren<Animator>();
+
+        // æ•µã®ä½ç½®æƒ…å ±ã‚’è¨­å®š
         enemyModelInstance.transform.localPosition =
             currentEnemy.ModelPosition;
         enemyModelInstance.transform.localEulerAngles =
@@ -119,13 +123,13 @@ public class BattleManager : MonoBehaviour
     private void SetMenuState(BattleMenuState state)
     {
         menuState = state;
-        // Root‚Ìƒƒjƒ…[ƒpƒlƒ‹‚Ì•\¦
+        // Rootã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒ‘ãƒãƒ«ã®è¡¨ç¤º
         if (RootMenuPanel != null)
         {
             RootMenuPanel.SetActive(
                 state == BattleMenuState.Root);
         }
-        // í“¬ƒpƒlƒ‹‚Ì•\¦
+        // æˆ¦é—˜ãƒ‘ãƒãƒ«ã®è¡¨ç¤º
         if (FightMenuPanel != null)
         {
             FightMenuPanel.SetActive(
@@ -146,32 +150,32 @@ public class BattleManager : MonoBehaviour
 
     private void BuildRootMenu()
     {
-        // RootMenu‚Ìq‚ÌŠK‘w‚É‚¢‚égameObject‚ğíœ‚µ‚Ü‚·
+        // RootMenuã®å­ã®éšå±¤ã«ã„ã‚‹gameObjectã‚’å‰Šé™¤ã—ã¾ã™
         ClearChildren(RootMenuRoot);
 
-        CreateButton(RootMenuRoot, "‚½‚½‚©‚¤", () =>
+        CreateButton(RootMenuRoot, "ãŸãŸã‹ã†", () =>
         {
             if (!isPlayerTurn)
             {
                 return;
             }
-            // ‚½‚½‚©‚¤ƒƒjƒ…[‚ğİ’è‚µ‚Ü‚·
+            // ãŸãŸã‹ã†ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’è¨­å®šã—ã¾ã™
             BuildFightMenu();
-            // Todo:‚±‚±‚ÉŒã‚Åİ’è—p‚Ìƒƒ\ƒbƒh‚ğ’Ç‹L‚·‚é
+            // Todo:ã“ã“ã«å¾Œã§è¨­å®šç”¨ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’è¿½è¨˜ã™ã‚‹
             SetMenuState(BattleMenuState.Fight);
-            DialogText.text = "‚Ç‚¤‚·‚éH";
+            DialogText.text = "ã©ã†ã™ã‚‹ï¼Ÿ";
         });
 
-        CreateButton(RootMenuRoot, "‚³‚­‚¹‚ñ", () =>
+        CreateButton(RootMenuRoot, "ã•ãã›ã‚“", () =>
           {
               if (!isPlayerTurn)
               {
                   return;
               }
-              DialogText.text = "‚³‚­‚¹‚ñ‚Í@‚Ü‚¾@‚Â‚©‚¦‚È‚¢I";
+              DialogText.text = "ã•ãã›ã‚“ã¯ã€€ã¾ã ã€€ã¤ã‹ãˆãªã„ï¼";
           });
 
-        CreateButton(RootMenuRoot, "‚É‚°‚é", () =>
+        CreateButton(RootMenuRoot, "ã«ã’ã‚‹", () =>
         {
             if (!isPlayerTurn)
             {
@@ -184,7 +188,7 @@ public class BattleManager : MonoBehaviour
     {
         ClearChildren(FightMenuRoot);
 
-        CreateButton(FightMenuRoot, "‚±‚¤‚°‚«", () =>
+        CreateButton(FightMenuRoot, "ã“ã†ã’ã", () =>
         {
             if (!isPlayerTurn)
             {
@@ -192,7 +196,7 @@ public class BattleManager : MonoBehaviour
             }
             StartCoroutine(ExecuteAttack());
         });
-        CreateButton(FightMenuRoot, "‚¶‚ã‚à‚ñ", () =>
+        CreateButton(FightMenuRoot, "ã˜ã‚…ã‚‚ã‚“", () =>
         {
             if (!isPlayerTurn)
             {
@@ -200,7 +204,7 @@ public class BattleManager : MonoBehaviour
             }
             StartCoroutine(ExecuteHealSpell());
         });
-        CreateButton(FightMenuRoot, "‚Æ‚­‚¬", () =>
+        CreateButton(FightMenuRoot, "ã¨ãã", () =>
         {
             if (!isPlayerTurn)
             {
@@ -208,7 +212,7 @@ public class BattleManager : MonoBehaviour
             }
             StartCoroutine(ExecutePowerSkill());
         });
-        CreateButton(FightMenuRoot, "‚Ú‚¤‚¬‚å", () =>
+        CreateButton(FightMenuRoot, "ã¼ã†ãã‚‡", () =>
         {
             if (!isPlayerTurn)
             {
@@ -216,22 +220,22 @@ public class BattleManager : MonoBehaviour
             }
             StartCoroutine(ExecuteGuard());
         });
-        CreateButton(FightMenuRoot, "‚à‚Ç‚é", () =>
+        CreateButton(FightMenuRoot, "ã‚‚ã©ã‚‹", () =>
         {
             SetMenuState(BattleMenuState.Root);
-            DialogText.text = "‚Ç‚¤‚·‚éH";
+            DialogText.text = "ã©ã†ã™ã‚‹ï¼Ÿ";
         });
     }
 
-    // ‚±‚¤‚°‚«‚Ìˆ—
+    // ã“ã†ã’ãã®å‡¦ç†
     private System.Collections.IEnumerator ExecuteAttack()
     {
         isPlayerTurn = false;
         SetMenuState(BattleMenuState.Busy);
 
-        DialogText.text = "‚±‚¤‚°‚«";
+        DialogText.text = "ã“ã†ã’ã";
         yield return new WaitForSeconds(0.5f);
-        // ¬”“_Ø‚èã‚°‚Å“G‚©‚ç‚Ìƒ_ƒ[ƒW‚ğŒvZ‚·‚é
+        // å°æ•°ç‚¹åˆ‡ã‚Šä¸Šã’ã§æ•µã‹ã‚‰ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’è¨ˆç®—ã™ã‚‹
         var damage =
             Mathf.Ceil(
                 Random.Range(PlayerAttackMin, PlayerAttackMax)
@@ -241,7 +245,7 @@ public class BattleManager : MonoBehaviour
         {
             EnemyHP = 0;
         }
-        DialogText.text = $"{damage} ƒ_ƒ[ƒWI";
+        DialogText.text = $"{damage} ãƒ€ãƒ¡ãƒ¼ã‚¸ï¼";
         UpdateUI();
         yield return new WaitForSeconds(0.8f);
         if (EnemyHP <= 0f)
@@ -255,33 +259,33 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    // ‚¶‚ã‚à‚ñ‚Ìˆ—
+    // ã˜ã‚…ã‚‚ã‚“ã®å‡¦ç†
     private System.Collections.IEnumerator ExecuteHealSpell()
     {
         isPlayerTurn = false;
         SetMenuState(BattleMenuState.Busy);
-        DialogText.text = "ƒLƒ…ƒAI";
+        DialogText.text = "ã‚­ãƒ¥ã‚¢ï¼";
         yield return new WaitForSeconds(0.6f);
 
-        // ‰ñ•œ‚Ì’l‚ğŒvZ
+        // å›å¾©ã®å€¤ã‚’è¨ˆç®—
         float heal = Mathf.CeilToInt(PlayerMaxHP * 0.25f) + 2;
-        // Mathf.Min(A,B)‚Å‚Ç‚¿‚ç‚ª¬‚³‚¢•û‚Ì’l‚ğæ“¾‚Å‚«‚é
+        // Mathf.Min(A,B)ã§ã©ã¡ã‚‰ãŒå°ã•ã„æ–¹ã®å€¤ã‚’å–å¾—ã§ãã‚‹
         PlayerHP = Mathf.Min(PlayerMaxHP, PlayerHP + heal);
 
-        DialogText.text = $"{heal} ‚©‚¢‚Ó‚­I";
+        DialogText.text = $"{heal} ã‹ã„ãµãï¼";
         UpdateUI();
         yield return new WaitForSeconds(0.8f);
         StartCoroutine(EnemyTurn());
     }
 
-    // ‚Æ‚­‚¬‚Ìˆ—
+    // ã¨ããã®å‡¦ç†
     private System.Collections.IEnumerator ExecutePowerSkill()
     {
         isPlayerTurn = false;
         SetMenuState(BattleMenuState.Busy);
-        DialogText.text = "‚Â‚æ‚­@‚«‚è‚Â‚¯‚½!";
+        DialogText.text = "ã¤ã‚ˆãã€€ãã‚Šã¤ã‘ãŸ!";
         yield return new WaitForSeconds(0.6f);
-        // ¬”“_Ø‚èã‚°‚Å“G‚©‚ç‚Ìƒ_ƒ[ƒW‚ğŒvZ‚·‚é
+        // å°æ•°ç‚¹åˆ‡ã‚Šä¸Šã’ã§æ•µã‹ã‚‰ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’è¨ˆç®—ã™ã‚‹
         var damage =
             Mathf.Ceil(
                 Random.Range(PlayerAttackMin, PlayerAttackMax) * 1.6f + 2
@@ -291,7 +295,7 @@ public class BattleManager : MonoBehaviour
         {
             EnemyHP = 0;
         }
-        DialogText.text = $"{damage} ƒ_ƒ[ƒWI";
+        DialogText.text = $"{damage} ãƒ€ãƒ¡ãƒ¼ã‚¸ï¼";
         UpdateUI();
         yield return new WaitForSeconds(0.8f);
         if (EnemyHP <= 0f)
@@ -306,32 +310,32 @@ public class BattleManager : MonoBehaviour
 
     }
 
-    // ‚Ú‚¤‚¬‚å‚Ìˆ—
+    // ã¼ã†ãã‚‡ã®å‡¦ç†
     private System.Collections.IEnumerator ExecuteGuard()
     {
         isPlayerTurn = false;
         SetMenuState(BattleMenuState.Busy);
 
-        // –hŒä—p‚Ìƒtƒ‰ƒO‚ğ—§‚Ä‚é
+        // é˜²å¾¡ç”¨ã®ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
         isGuading = true;
-        DialogText.text = "‚İ‚ğ@‚Ü‚à‚Á‚Ä‚¢‚éI";
+        DialogText.text = "ã¿ã‚’ã€€ã¾ã‚‚ã£ã¦ã„ã‚‹ï¼";
         yield return new WaitForSeconds(0.8f);
         StartCoroutine(EnemyTurn());
     }
 
     private System.Collections.IEnumerator TryEscape()
     {
-        // Random.value‚Í0`1‚ÌŠÔ‚Ì’l‚ğƒ‰ƒ“ƒ_ƒ€‚É•Ô‚µ‚Ä‚­‚ê‚Ü‚·
+        // Random.valueã¯0ï½1ã®é–“ã®å€¤ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«è¿”ã—ã¦ãã‚Œã¾ã™
         bool success = Random.value < 0.5f;
         if (success)
         {
-            // “¦–S¬Œ÷
-            DialogText.text = "‚¤‚Ü‚­@‚É‚°‚«‚ê‚½I";
+            // é€ƒäº¡æˆåŠŸ
+            DialogText.text = "ã†ã¾ãã€€ã«ã’ãã‚ŒãŸï¼";
             Invoke(nameof(ReturnToField), 1.2f);
         }
         else
         {
-            DialogText.text = "‚Ü‚í‚è‚±‚Ü‚ê‚Ä‚µ‚Ü‚Á‚½I";
+            DialogText.text = "ã¾ã‚ã‚Šã“ã¾ã‚Œã¦ã—ã¾ã£ãŸï¼";
             yield return new WaitForSeconds(0.8f);
             isPlayerTurn = false;
             SetMenuState(BattleMenuState.Busy);
@@ -340,7 +344,7 @@ public class BattleManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Button‚ğ¶¬
+    /// Buttonã‚’ç”Ÿæˆ
     /// </summary>
     void CreateButton(Transform root, string label,
         System.Action onClick)
@@ -366,11 +370,11 @@ public class BattleManager : MonoBehaviour
     }
 
     /// <summary>
-    /// UnityEditorã‚ÌAttackButton‚ÌOnClick‚Éİ’è
+    /// UnityEditorä¸Šã®AttackButtonã®OnClickã«è¨­å®š
     /// </summary>
     public void OnAttackButton()
     {
-        // ƒvƒŒƒCƒ„[‚Ìƒ^[ƒ“‚¶‚á‚È‚©‚Á‚½‚ç‰½‚à‚µ‚Ü‚¹‚ñ
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¿ãƒ¼ãƒ³ã˜ã‚ƒãªã‹ã£ãŸã‚‰ä½•ã‚‚ã—ã¾ã›ã‚“
         if (!isPlayerTurn)
         {
             return;
@@ -382,11 +386,11 @@ public class BattleManager : MonoBehaviour
     {
         isPlayerTurn = false;
 
-        DialogText.text = "ƒvƒŒƒCƒ„[‚ÌUŒ‚I";
+        DialogText.text = "ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ”»æ’ƒï¼";
 
-        // 1•b‘Ò‚Â
+        // 1ç§’å¾…ã¤
         yield return new WaitForSeconds(1f);
-        // ƒ_ƒ[ƒWŒvZ‚Å¬”“_Ø‚èã‚°
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸è¨ˆç®—ã§å°æ•°ç‚¹åˆ‡ã‚Šä¸Šã’
         var damage
             = Mathf.Ceil(
                 Random.Range(PlayerAttackMin, PlayerAttackMax)
@@ -398,37 +402,43 @@ public class BattleManager : MonoBehaviour
             EnemyHP = 0;
         }
 
-        DialogText.text = $"{damage} ƒ_ƒ[ƒWI";
+        DialogText.text = $"{damage} ãƒ€ãƒ¡ãƒ¼ã‚¸ï¼";
 
         UpdateUI();
 
         yield return new WaitForSeconds(1f);
 
-        // EnemyHP‚ğí‚èØ‚ê‚½‚ç
+        // EnemyHPã‚’å‰Šã‚Šåˆ‡ã‚ŒãŸã‚‰
         if (EnemyHP <= 0f)
         {
-            // Ÿ—˜
+            // å‹åˆ©
             Victory();
         }
         else
-        { // ‚»‚¤‚¶‚á‚È‚©‚Á‚½‚çí“¬‘±s
+        { // ãã†ã˜ã‚ƒãªã‹ã£ãŸã‚‰æˆ¦é—˜ç¶šè¡Œ
             StartCoroutine(EnemyTurn());
         }
     }
 
     private System.Collections.IEnumerator EnemyTurn()
     {
-        DialogText.text = $"{currentEnemy.DisplayName}‚ÌUŒ‚I";
+        DialogText.text = $"{currentEnemy.DisplayName}ã®æ”»æ’ƒï¼";
+
+        // Attackã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
+        if (enemyAnimator != null)
+        {
+            enemyAnimator.SetTrigger("Attack");
+        }
 
         yield return new WaitForSeconds(1f);
 
-        // ¬”“_Ø‚èã‚°‚Å“G‚©‚ç‚Ìƒ_ƒ[ƒW‚ğŒvZ‚·‚é
+        // å°æ•°ç‚¹åˆ‡ã‚Šä¸Šã’ã§æ•µã‹ã‚‰ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’è¨ˆç®—ã™ã‚‹
         var damage = Mathf.Ceil(
                 Random.Range(currentEnemy.AttackMin,
                 currentEnemy.AttackMax)
                 );
 
-        // Player‚ª–hŒä’†
+        // PlayerãŒé˜²å¾¡ä¸­
         if (isGuading)
         {
             damage = Mathf.Ceil(damage * 0.5f);
@@ -437,7 +447,7 @@ public class BattleManager : MonoBehaviour
 
         PlayerHP -= damage;
 
-        DialogText.text = $"{damage} ƒ_ƒ[ƒWI";
+        DialogText.text = $"{damage} ãƒ€ãƒ¡ãƒ¼ã‚¸ï¼";
 
         if (PlayerHP <= 0)
         {
@@ -450,19 +460,19 @@ public class BattleManager : MonoBehaviour
 
         if (PlayerHP <= 0f)
         {
-            // ”s–k
+            // æ•—åŒ—
             GameOver();
         }
         else
         {
             isPlayerTurn = true;
             SetMenuState(BattleMenuState.Root);
-            DialogText.text = "‚Ç‚¤‚·‚éH";
+            DialogText.text = "ã©ã†ã™ã‚‹ï¼Ÿ";
         }
     }
 
     /// <summary>
-    /// HP‚È‚Ç‚ÌUI‚ÌXV
+    /// HPãªã©ã®UIã®æ›´æ–°
     /// </summary>
     private void UpdateUI()
     {
@@ -482,12 +492,19 @@ public class BattleManager : MonoBehaviour
 
     private void Victory()
     {
-        DialogText.text = "Ÿ—˜I";
+        DialogText.text = "å‹åˆ©ï¼";
+
+        // Dieã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
+        if (enemyAnimator != null)
+        {
+            enemyAnimator.SetTrigger("Die");
+        }
+
         Invoke(nameof(ReturnToField), 2f);
     }
     private void GameOver()
     {
-        DialogText.text = "‘S–Å‚µ‚½cc";
+        DialogText.text = "å…¨æ»…ã—ãŸâ€¦â€¦";
         Invoke(nameof(ReturnToField), 2f);
     }
     private void ReturnToField()
