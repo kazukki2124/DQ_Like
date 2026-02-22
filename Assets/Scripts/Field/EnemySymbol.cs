@@ -5,13 +5,56 @@ public class EnemySymbol : MonoBehaviour
 {
     private string BattleSceneName = "BattleScene";
 
+    [SerializeField]
+    private float detectionRadius = 5.0f; // Range to start chasing
+    [SerializeField]
+    private float moveSpeed = 3.0f;       // Speed of movement
+
+    private Vector3 initialPosition;
+    private Transform playerTransform;
+
+    private void Start()
+    {
+        initialPosition = transform.position;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerTransform = player.transform;
+        }
+    }
+
+    private void Update()
+    {
+        if (playerTransform == null) return;
+
+        float distance = Vector3.Distance(transform.position, playerTransform.position);
+
+        if (distance < detectionRadius)
+        {
+            // Chase Player
+            Vector3 targetPosition = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            transform.LookAt(targetPosition);
+        }
+        else
+        {
+            // Return to Initial Position
+            Vector3 returnPosition = new Vector3(initialPosition.x, transform.position.y, initialPosition.z);
+            if (Vector3.Distance(transform.position, returnPosition) > 0.1f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, returnPosition, moveSpeed * Time.deltaTime);
+                transform.LookAt(returnPosition);
+            }
+        }
+    }
+
     /// <summary>
-    /// N“ü”»’è‚ÅPlayer‚ª“ü‚Á‚Ä‚«‚½‚Æ‚«‚Éˆ—‚ğs‚¤
+    /// ä¾µå…¥åˆ¤å®šã§PlayerãŒå…¥ã£ã¦ããŸã¨ãã«å‡¦ç†ã‚’è¡Œã†
     /// </summary>
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        // Player‚ÌTagˆÈŠO‚ÌGameObject‚ªN“ü‚µ‚Ä‚«‚½‚ç‰½‚à‚µ‚È‚¢
+        // Playerã®Tagä»¥å¤–ã®GameObjectãŒä¾µå…¥ã—ã¦ããŸã‚‰ä½•ã‚‚ã—ãªã„
         if (!other.CompareTag("Player"))
         {
             return;
