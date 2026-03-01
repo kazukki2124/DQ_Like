@@ -22,6 +22,10 @@ public class BattleManager : MonoBehaviour
     private GameObject enemyModelInstance;
     private Animator enemyAnimator;
 
+    [Header("PlayerStatusとLevelSystemの参照")]
+    public PlayerStatus PlayerStatus;
+    public LevelSystem LevelSystem;
+
     [Header("PlayerData")]
     public float PlayerMaxHP = 30f;
     public float PlayerHP = 30;
@@ -55,13 +59,30 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         SetupEnemyFromDB();
+        ApplyPlayerStatus();
+
         UpdateUI();
 
         BuildRootMenu();
+
         // 戦闘の開始時に呼び出す
         SpawnEnemy();
+
         DialogText.text =
             $"{currentEnemy.DisplayName}が現れた！";
+    }
+
+    // データからプレイヤーの値を反映する
+    private void ApplyPlayerStatus()
+    {
+        if(PlayerStatus == null)
+        {
+            return;
+        }
+        PlayerMaxHP = PlayerStatus.MaxHP;
+        PlayerHP = Mathf.Min(PlayerHP, PlayerMaxHP);
+        PlayerAttackMin = PlayerStatus.AttackMin;
+        PlayerAttackMax = PlayerStatus.AttackMax;
     }
 
     private void SetupEnemyFromDB()
@@ -493,6 +514,35 @@ public class BattleManager : MonoBehaviour
     private void Victory()
     {
         DialogText.text = "勝利！";
+
+        int exp = 0;
+        // 敵の情報から経験値を取得します
+        if(currentEnemy != null)
+        {
+            exp = currentEnemy.ExpReward;
+        }
+
+        int levelUps = 0;
+        if(LevelSystem != null)
+        {
+            levelUps = LevelSystem.AddExp(exp);
+        }
+
+        ApplyPlayerStatus();
+
+        UpdateUI();
+
+        if(levelUps > 0)
+        {
+            DialogText.text +=
+                $"\n{exp} EXP かくとく！" +
+                $"\nレベルが {PlayerStatus.Level} になった！";
+        }
+        else
+        {
+            DialogText.text +=
+                $"\n{exp} EXP かくとく！";
+        }
 
         // Dieアニメーションを再生
         if (enemyAnimator != null)

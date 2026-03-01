@@ -225,6 +225,55 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 9216106435666115464, guid: d35aa5f67082ac24989a331d2701ce14, type: 3}
   m_PrefabInstance: {fileID: 25254365}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &26729763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 26729765}
+  - component: {fileID: 26729764}
+  m_Layer: 0
+  m_Name: LevelSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &26729764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26729763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ff94efac3f3c0f47800e82820cc5181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Status: {fileID: 11400000, guid: adf96259bd7369347a106d97424a6e74, type: 2}
+  ExpTable: {fileID: 11400000, guid: 6f2b07b443ea8cd44977699c71d6bfce, type: 2}
+  HpUpPerLevel: 5
+  AttackMinPerLevel: 1
+  AttackMaxPerLevel: 1
+--- !u!4 &26729765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26729763}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &40718344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1974,6 +2023,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyDB: {fileID: 11400000, guid: fb6209b10185859408403dadb1a5901b, type: 2}
   EnemyModelRoot: {fileID: 1151691048}
+  PlayerStatus: {fileID: 11400000, guid: adf96259bd7369347a106d97424a6e74, type: 2}
+  LevelSystem: {fileID: 26729764}
   PlayerMaxHP: 30
   PlayerHP: 30
   PlayerAttackMin: 10
@@ -2453,3 +2504,4 @@ SceneRoots:
   - {fileID: 973404917}
   - {fileID: 1508492926}
   - {fileID: 1151691048}
+  - {fileID: 26729765}
