@@ -73,7 +73,7 @@ public class BattleManager : MonoBehaviour
     }
 
     // データからプレイヤーの値を反映する
-    private void ApplyPlayerStatus()
+    public void ApplyPlayerStatus()
     {
         if(PlayerStatus == null)
         {
@@ -495,7 +495,7 @@ public class BattleManager : MonoBehaviour
     /// <summary>
     /// HPなどのUIの更新
     /// </summary>
-    private void UpdateUI()
+    public void UpdateUI()
     {
         PlayerHPText.text = $"HP:{PlayerHP}/{PlayerMaxHP}";
         if (currentEnemy != null)
