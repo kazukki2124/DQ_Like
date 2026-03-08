@@ -9,7 +9,7 @@ public class MenuButton : MonoBehaviour
     private System.Action onClick;
 
     /// <summary>
-    /// BattleManager‚©‚çƒZƒbƒgƒAƒbƒv‚ðs‚¤
+    /// ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
     /// </summary>
     /// <param name="label"></param>
     /// <param name="onClick"></param>
@@ -22,9 +22,7 @@ public class MenuButton : MonoBehaviour
         }
         if(Button != null)
         {
-            // Button‚ÉÝ’è‚³‚ê‚Ä‚¢‚éƒNƒŠƒbƒN‚µ‚½‚Æ‚«‚Ì‹““®‚ðíœ
             Button.onClick.RemoveAllListeners();
-            // Script‘¤‚©‚çƒNƒŠƒbƒN‚µ‚½‚Æ‚«‚Ì‹““®‚ðÝ’è‚·‚é
             Button.onClick.AddListener(() => this.onClick?.Invoke());
         }
     }

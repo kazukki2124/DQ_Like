@@ -5,8 +5,8 @@ using System.Collections;
 public class DialogUI : MonoBehaviour
 {
     /// <summary>
-    /// ‚Ç‚±‚©‚ç‚Å‚àDialogUI‚ÉƒAƒNƒZƒX‚Å‚«‚é‚æ‚¤‚É
-    /// static‚ÅéŒ¾‚·‚é
+    /// ã©ã“ã‹ã‚‰ã§ã‚‚DialogUIã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã‚‹ã‚ˆã†ã«
+    /// staticã§å®£è¨€ã™ã‚‹
     /// </summary>
     public static DialogUI Instance;
 
@@ -16,40 +16,40 @@ public class DialogUI : MonoBehaviour
 
     public TextMeshProUGUI MessageText;
 
-    [Header("¥‚È‚Ç‚ÌNextHint (Optional)")]
+    [Header("â–¼ãªã©ã®NextHint (Optional)")]
     public GameObject NextHint;
 
     /// <summary>
-    /// ‚Í‚¢A‚¢‚¢‚¦ƒ{ƒ^ƒ“‚Ì•Ï”
+    /// ã¯ã„ã€ã„ã„ãˆãƒœã‚¿ãƒ³ã®å¤‰æ•°
     /// </summary>
     public GameObject YesNoButtonBG;
 
     /// <summary>
-    /// 1•¶š‚ğ‘Ò‚ÂŠÔ
+    /// 1æ–‡å­—ã‚’å¾…ã¤æ™‚é–“
     /// </summary>
     private float charInterval = 0.15f;
 
     /// <summary>
-    /// ƒƒbƒZ[ƒW‚ÌŒ»İ‚Ìs
+    /// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ç¾åœ¨ã®è¡Œ
     /// </summary>
     private string[] currentLines;
 
     /// <summary>
-    /// ‰½s–Ú‚©
+    /// ä½•è¡Œç›®ã‹
     /// </summary>
     private int lineIndex;
 
     private Coroutine typingCoroutine;
 
     /// <summary>
-    /// •¶š‘—‚è’†‚©
+    /// æ–‡å­—é€ã‚Šä¸­ã‹
     /// </summary>
     private bool isTyping = false;
 
     private void Awake()
     {
         Instance = this;
-        // ƒQ[ƒ€ŠJn‚Íƒ_ƒCƒAƒƒO‚Í•\¦‚µ‚È‚¢
+        // ã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã¯ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã¯è¡¨ç¤ºã—ãªã„
         Panel.SetActive(false);
         if (NextHint != null)
         {
@@ -57,22 +57,22 @@ public class DialogUI : MonoBehaviour
         }
     }
     /// <summary>
-    /// ŠO•”‚©‚çƒ_ƒCƒAƒƒO‚Ìİ’è‚ğ‚µ‚ÄŒ©‚¹‚é
+    /// å¤–éƒ¨ã‹ã‚‰ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã®è¨­å®šã‚’ã—ã¦è¦‹ã›ã‚‹
     /// </summary>
-    /// <param name="name">–¼‘O</param>
-    /// <param name="message">–{•¶</param>
+    /// <param name="name">åå‰</param>
+    /// <param name="message">æœ¬æ–‡</param>
     public void Show(DialogData dialogData)
     {
-        // DialogData‚Ìƒf[ƒ^‚ª³í‚É“®‚©‚È‚¢ê‡
+        // DialogDataã®ãƒ‡ãƒ¼ã‚¿ãŒæ­£å¸¸ã«å‹•ã‹ãªã„å ´åˆ
         if (dialogData == null ||
             dialogData.MessageLines == null ||
             dialogData.MessageLines.Length == 0)
         {
-            Debug.LogWarning("DialogData‚ª•s³‚Å‚·");
+            Debug.LogWarning("DialogDataãŒä¸æ­£ã§ã™");
             return;
         }
 
-        // bool‚Ì’l‚ğ’¼ÚGameObject‚ÌActiv‚Ì’l‚É•ÏX‚·‚é
+        // boolã®å€¤ã‚’ç›´æ¥GameObjectã®Activã®å€¤ã«å¤‰æ›´ã™ã‚‹
         YesNoButtonBG.SetActive(dialogData.ShowYesNo);
 
         GameState.IsDialogOpen = true;
@@ -83,25 +83,25 @@ public class DialogUI : MonoBehaviour
         lineIndex = 0;
 
         Panel.SetActive(true);
-        // Œ»İ‚Ìs‚ğ•\¦‚µ‚Ä‚¢‚­
+        // ç¾åœ¨ã®è¡Œã‚’è¡¨ç¤ºã—ã¦ã„ã
         ShowLine(lineIndex);
     }
 
     /// <summary>
-    /// ŠO•”‚©‚çƒAƒCƒeƒ€æ“¾‚Ìƒ_ƒCƒAƒƒO‚ğŒ©‚¹‚é
+    /// å¤–éƒ¨ã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ å–å¾—ã®ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¦‹ã›ã‚‹
     /// </summary>
-    /// <param name="name">–¼‘O</param>
-    /// <param name="message">–{•¶</param>
+    /// <param name="name">åå‰</param>
+    /// <param name="message">æœ¬æ–‡</param>
     public void ShowItemDialog(string dialogMessage)
     {
-        // DialogMessage‚ª–³‚©‚Á‚½‚ç
+        // DialogMessageãŒç„¡ã‹ã£ãŸã‚‰
         if (dialogMessage == string.Empty)
         {
-            Debug.LogWarning("DialogMessage‚ª‚È‚¢‚Å‚·");
+            Debug.LogWarning("DialogMessageãŒãªã„ã§ã™");
             return;
         }
 
-        // YesNoƒ{ƒ^ƒ“‚Í•\¦‚µ‚Ü‚¹‚ñ
+        // YesNoãƒœã‚¿ãƒ³ã¯è¡¨ç¤ºã—ã¾ã›ã‚“
         YesNoButtonBG.SetActive(false);
 
         GameState.IsDialogOpen = true;
@@ -109,30 +109,30 @@ public class DialogUI : MonoBehaviour
         NameText.text = string.Empty;
 
         string[] itemLines = new string[1];
-        itemLines[0] = $"{dialogMessage}‚ğ@è‚É“ü‚ê‚½" ;
+        itemLines[0] = $"{dialogMessage}ã‚’ã€€æ‰‹ã«å…¥ã‚ŒãŸ" ;
         currentLines = itemLines;
         lineIndex = 0;
 
         Panel.SetActive(true);
-        // Œ»İ‚Ìs‚ğ•\¦‚µ‚Ä‚¢‚­
+        // ç¾åœ¨ã®è¡Œã‚’è¡¨ç¤ºã—ã¦ã„ã
         ShowLine(lineIndex);
     }
 
     /// <summary>
-    /// ŠO•”‚©‚çƒAƒCƒeƒ€æ“¾‚Ìƒ_ƒCƒAƒƒO‚ğŒ©‚¹‚é
+    /// å¤–éƒ¨ã‹ã‚‰ã‚¢ã‚¤ãƒ†ãƒ å–å¾—ã®ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’è¦‹ã›ã‚‹
     /// </summary>
-    /// <param name="name">–¼‘O</param>
-    /// <param name="message">–{•¶</param>
+    /// <param name="name">åå‰</param>
+    /// <param name="message">æœ¬æ–‡</param>
     public void ShowSimpleMessage(string simpleMessage)
     {
-        // DialogMessage‚ª–³‚©‚Á‚½‚ç
+        // DialogMessageãŒç„¡ã‹ã£ãŸã‚‰
         if (simpleMessage == string.Empty)
         {
-            Debug.LogWarning("SimpleMessage‚ª‚È‚¢‚Å‚·");
+            Debug.LogWarning("SimpleMessageãŒãªã„ã§ã™");
             return;
         }
 
-        // YesNoƒ{ƒ^ƒ“‚Í•\¦‚µ‚Ü‚¹‚ñ
+        // YesNoãƒœã‚¿ãƒ³ã¯è¡¨ç¤ºã—ã¾ã›ã‚“
         YesNoButtonBG.SetActive(false);
 
         GameState.IsDialogOpen = true;
@@ -140,22 +140,22 @@ public class DialogUI : MonoBehaviour
         NameText.text = string.Empty;
 
         string[] itemLines_HasKey = new string[2];
-        itemLines_HasKey[0] = $"•ó” ‚ğ‚İ‚Â‚¯‚½I";
-        itemLines_HasKey[1] = $"‚µ‚©‚µŒ®‚ª‚©‚©‚Á‚Ä‚¢‚é‚æ‚¤‚¾EEE";
+        itemLines_HasKey[0] = $"å®ç®±ã‚’ã¿ã¤ã‘ãŸï¼";
+        itemLines_HasKey[1] = $"ã—ã‹ã—éµãŒã‹ã‹ã£ã¦ã„ã‚‹ã‚ˆã†ã ãƒ»ãƒ»ãƒ»";
         currentLines = itemLines_HasKey;
         lineIndex = 0;
 
         Panel.SetActive(true);
-        // Œ»İ‚Ìs‚ğ•\¦‚µ‚Ä‚¢‚­
+        // ç¾åœ¨ã®è¡Œã‚’è¡¨ç¤ºã—ã¦ã„ã
         ShowLine(lineIndex);
     }
 
     /// <summary>
-    /// UI‚ÌCloseƒ{ƒ^ƒ“‚©‚çŒÄ‚Ñ‚Ü‚·
+    /// UIã®Closeãƒœã‚¿ãƒ³ã‹ã‚‰å‘¼ã³ã¾ã™
     /// </summary>
     public void Close()
     {
-        // ‚Ü‚¸•¶š‘—‚è‚ğ~‚ß‚Ä
+        // ã¾ãšæ–‡å­—é€ã‚Šã‚’æ­¢ã‚ã¦
         StopTypingIfNeeded();
 
         GameState.IsDialogOpen = false;
@@ -169,24 +169,24 @@ public class DialogUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ‰ï˜b’†‚ÌŸ‚Ö‚Ì“ü—Í
+    /// ä¼šè©±ä¸­ã®æ¬¡ã¸ã®å…¥åŠ›
     /// </summary>
     public void Next()
     {
-        // ƒpƒlƒ‹‚ª—LŒø‚¶‚á‚È‚©‚Á‚½‚ç
+        // ãƒ‘ãƒãƒ«ãŒæœ‰åŠ¹ã˜ã‚ƒãªã‹ã£ãŸã‚‰
         if (!Panel.activeSelf)
         {
             return;
         }
-        // •¶š‘—‚è’†‚È‚ç
+        // æ–‡å­—é€ã‚Šä¸­ãªã‚‰
         if (isTyping)
         {
-            // ‘¦•\¦
+            // å³è¡¨ç¤º
             FinishCurrentLineInstant();
             return;
         }
-        // Ÿ‚Ìs‚Ö
-        lineIndex++; // ƒCƒ“ƒNƒŠƒƒ“ƒg(n + 1‚·‚é‚±‚Æ)
+        // æ¬¡ã®è¡Œã¸
+        lineIndex++; // ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ(n + 1ã™ã‚‹ã“ã¨)
 
         if (currentLines != null &&
             lineIndex < currentLines.Length)
@@ -200,16 +200,16 @@ public class DialogUI : MonoBehaviour
     }
 
     /// <summary>
-    /// indexs‚ğ•\¦‚·‚é
+    /// indexè¡Œã‚’è¡¨ç¤ºã™ã‚‹
     /// </summary>
     /// <param name="index"></param>
     private void ShowLine(int index)
     {
-        // ‚Ü‚¸•¶š‘—‚è‚ğ~‚ß‚Ä
+        // ã¾ãšæ–‡å­—é€ã‚Šã‚’æ­¢ã‚ã¦
         StopTypingIfNeeded();
-        // ‚¢‚Ü•\¦‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ğ‹ó‚É‚µ‚Ü‚·
+        // ã„ã¾è¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã‚’ç©ºã«ã—ã¾ã™
         MessageText.text = string.Empty;
-        // ¥‚È‚Ç‚Ì‘—‚è•\¦‚ÌƒIƒuƒWƒFƒNƒg‚ª‚ ‚ê‚Î•\¦‚µ‚Ü‚·
+        // â–¼ãªã©ã®é€ã‚Šè¡¨ç¤ºã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã‚ã‚Œã°è¡¨ç¤ºã—ã¾ã™
         if(NextHint != null)
         {
             NextHint.SetActive(true);
@@ -219,14 +219,14 @@ public class DialogUI : MonoBehaviour
             StartCoroutine(TypeLine(currentLines[index]));
     }
     /// <summary>
-    /// •¶š‘—‚è
+    /// æ–‡å­—é€ã‚Š
     /// </summary>
     /// <param name="line"></param>
     /// <returns></returns>
     private IEnumerator TypeLine(string line)
     {
         isTyping = true;
-        // s‚Ì’†‚Ì1•¶š‚ğæ‚èo‚µ‚Ä‚¢‚­
+        // è¡Œã®ä¸­ã®1æ–‡å­—ã‚’å–ã‚Šå‡ºã—ã¦ã„ã
         foreach (char c in line)
         {
             MessageText.text += c;
@@ -238,7 +238,7 @@ public class DialogUI : MonoBehaviour
         {
             NextHint.SetActive(true);
         }
-        // ©“®‚ÅŸ‚Ìs‚Ös‚­‚æ‚¤‚É
+        // è‡ªå‹•ã§æ¬¡ã®è¡Œã¸è¡Œãã‚ˆã†ã«
         //Next();
         typingCoroutine = null;
     }
@@ -249,11 +249,11 @@ public class DialogUI : MonoBehaviour
         {
             return;
         }
-        // ‚Ü‚¸•¶š‘—‚è‚ğ‚Æ‚ß‚Ä
+        // ã¾ãšæ–‡å­—é€ã‚Šã‚’ã¨ã‚ã¦
         StopTypingIfNeeded();
-        // Œ»İ‚Ìs‚ğ‘S‚Ä•\¦
+        // ç¾åœ¨ã®è¡Œã‚’å…¨ã¦è¡¨ç¤º
         MessageText.text = currentLines[lineIndex];
-        // •¶š‘—‚è’†‚¶‚á‚È‚­‚·
+        // æ–‡å­—é€ã‚Šä¸­ã˜ã‚ƒãªãã™
         isTyping = false;
         if (NextHint != null)
         {
@@ -262,7 +262,7 @@ public class DialogUI : MonoBehaviour
     }
 
     /// <summary>
-    /// •K—v‚¾‚Á‚½‚ç•¶š‘—‚è‚ğ~‚ß‚é
+    /// å¿…è¦ã ã£ãŸã‚‰æ–‡å­—é€ã‚Šã‚’æ­¢ã‚ã‚‹
     /// </summary>
     private void StopTypingIfNeeded()
     {
@@ -274,7 +274,7 @@ public class DialogUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒ_ƒCƒAƒƒOUI‚ªŠJ‚¢‚Ä‚¢‚½‚çŸ‚Ìs‚ğ•\¦‚·‚é
+    /// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°UIãŒé–‹ã„ã¦ã„ãŸã‚‰æ¬¡ã®è¡Œã‚’è¡¨ç¤ºã™ã‚‹
     /// </summary>
     /// <returns></returns>
     public bool TryNextIfOpen()

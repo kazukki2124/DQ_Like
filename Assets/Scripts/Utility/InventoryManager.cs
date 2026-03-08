@@ -3,33 +3,33 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    // ‚Ç‚±‚©‚ç‚Å‚àŒÄ‚×‚é‚æ‚¤‚ÉstaticCüq‚ğ•t‚¯‚é
+    // ã©ã“ã‹ã‚‰ã§ã‚‚å‘¼ã¹ã‚‹ã‚ˆã†ã«staticä¿®é£¾å­ã‚’ä»˜ã‘ã‚‹
     public static InventoryManager Instance;
 
-    // List‚Æ‚¢‚¤‘Œ¸‚Å‚«‚é”z—ñ‚ÌéŒ¾‚ğs‚¢‚Ü‚·
+    // Listã¨ã„ã†å¢—æ¸›ã§ãã‚‹é…åˆ—ã®å®£è¨€ã‚’è¡Œã„ã¾ã™
     private List<InventryEntry> items =
         new List<InventryEntry>();
 
     private void Awake()
     {
-        // ƒV[ƒ“‚ğ‚Ü‚½‚¢‚Åg‚¦‚é‚æ‚¤‚Éİ’è
+        // ã‚·ãƒ¼ãƒ³ã‚’ã¾ãŸã„ã§ä½¿ãˆã‚‹ã‚ˆã†ã«è¨­å®š
         if (Instance == null)
         {
             Instance = this;
-            // ƒV[ƒ“‚Ì”jŠü‚ÉŠª‚«‚Ü‚ê‚È‚¢‚æ‚¤‚É‚·‚é
-            // İ’è‚Ì‘‚«•û
+            // ã‚·ãƒ¼ãƒ³ã®ç ´æ£„ã«å·»ãè¾¼ã¾ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹
+            // è¨­å®šã®æ›¸ãæ–¹
             DontDestroyOnLoad(gameObject);
         }
         else
         {
-            // ŠÇ—‚·‚éƒ}ƒl[ƒWƒƒ[‚ª•¡”‚¢‚½‚ç¢‚é‚Ì‚Å
-            // â‘Î‚Éˆê‚Â‚¾‚¯‘¶İ‚·‚é‚æ‚¤‚É‚·‚é
+            // ç®¡ç†ã™ã‚‹ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ãŒè¤‡æ•°ã„ãŸã‚‰å›°ã‚‹ã®ã§
+            // çµ¶å¯¾ã«ä¸€ã¤ã ã‘å­˜åœ¨ã™ã‚‹ã‚ˆã†ã«ã™ã‚‹
             Destroy(gameObject);
         }
     }
 
     /// <summary>
-    /// ƒCƒ“ƒxƒ“ƒgƒŠ‚ÉƒAƒCƒeƒ€‚ğ’Ç‰Á‚·‚é
+    /// ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’è¿½åŠ ã™ã‚‹
     /// </summary>
     /// <param name="item"></param>
     public void Add(ItemData item, int amount)
@@ -38,21 +38,21 @@ public class InventoryManager : MonoBehaviour
         {
             return;
         }
-        // ’Ç‰Á‚³‚ê‚½ƒAƒCƒeƒ€‚ğAŒ»İ‚Á‚Ä‚¢‚éƒAƒCƒeƒ€‚Ì
-        // ’†‚©‚ç’²‚×‚é
+        // è¿½åŠ ã•ã‚ŒãŸã‚¢ã‚¤ãƒ†ãƒ ã‚’ã€ç¾åœ¨æŒã£ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã®
+        // ä¸­ã‹ã‚‰èª¿ã¹ã‚‹
         var entry = items.Find(
-            x => x.Item = item);
+            x => x.Item == item);
 
-        // ‚·‚Å‚Éæ“¾‚µ‚Ä‚¢‚éƒAƒCƒeƒ€‚¾‚Á‚½ê‡
+        // ã™ã§ã«å–å¾—ã—ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã ã£ãŸå ´åˆ
         if(entry != null)
         {
-            // amount‚Åİ’è‚³‚ê‚Ä‚¢‚éŒÂ”‚ğ’Ç‰Á‚µ‚Ü‚·
+            // amountã§è¨­å®šã•ã‚Œã¦ã„ã‚‹å€‹æ•°ã‚’è¿½åŠ ã—ã¾ã™
             entry.Count += amount;
         }
         else
         {
 
-            // ƒAƒCƒeƒ€ƒf[ƒ^‚ğƒCƒ“ƒxƒ“ƒgƒŠ[‚É’Ç‰Á
+            // ã‚¢ã‚¤ãƒ†ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªãƒ¼ã«è¿½åŠ 
             items.Add(new InventryEntry
             {
                 Item = item,
@@ -60,25 +60,25 @@ public class InventoryManager : MonoBehaviour
             });
         }
 
-        Debug.Log($"[ƒCƒ“ƒxƒ“ƒgƒŠ[]ƒAƒCƒeƒ€’Ç‰Á:{item.ItemName}");
+        Debug.Log($"[ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªãƒ¼]ã‚¢ã‚¤ãƒ†ãƒ è¿½åŠ :{item.ItemName}");
     }
 
     /// <summary>
-    /// ˆø”‚ÌƒAƒCƒeƒ€‚ğ‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
+    /// å¼•æ•°ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’æŒã£ã¦ã„ã‚‹ã‹ã©ã†ã‹
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
     public bool Has(ItemData item)
     {
-        // ˆø”‚ÌƒAƒCƒeƒ€‚ğAŒ»İ‚Á‚Ä‚¢‚éƒAƒCƒeƒ€‚Ì
-        // ’†‚©‚ç’²‚×‚é
+        // å¼•æ•°ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã€ç¾åœ¨æŒã£ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã®
+        // ä¸­ã‹ã‚‰èª¿ã¹ã‚‹
         var entry = items.Find(
-            x => x.Item = item);
+            x => x.Item == item);
         return entry != null;
     }
 
     /// <summary>
-    /// ƒAƒCƒeƒ€‚Ì–¼Ì‚ÅitemData‚ğæ“¾‚·‚é
+    /// ã‚¢ã‚¤ãƒ†ãƒ ã®åç§°ã§itemDataã‚’å–å¾—ã™ã‚‹
     /// </summary>
     /// <param name="itemName"></param>
     /// <returns></returns>
@@ -90,7 +90,7 @@ public class InventoryManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ‚Ù‚©‚Ìclass‚©‚çitem‚ğŒ©‚½‚¢‚Æ‚«‚ÉŒÄ‚Ô
+    /// ã»ã‹ã®classã‹ã‚‰itemã‚’è¦‹ãŸã„ã¨ãã«å‘¼ã¶
     /// </summary>
     /// <returns></returns>
     public IReadOnlyList<InventryEntry> GetAll()
@@ -99,16 +99,27 @@ public class InventoryManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒAƒCƒeƒ€‚ğg—p‚·‚é
+    /// ã‚«ãƒ†ã‚´ãƒªåˆ¥ã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’å–å¾—ã™ã‚‹
+    /// </summary>
+    /// <param name="category"></param>
+    /// <returns></returns>
+    public List<InventryEntry> GetItemsByCategory(ItemData.ItemCategory category)
+    {
+        return items.FindAll(x => x.Item.Category == category);
+    }
+
+
+    /// <summary>
+    /// ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ç”¨ã™ã‚‹
     /// </summary>
     /// <returns></returns>
     public bool UseItem(ItemData item)
     {
         var entry = items.Find(
-            x => x.Item = item);
+            x => x.Item == item);
 
-        // ƒAƒCƒeƒ€‚ğ‚»‚à‚»‚à–¢Š‚©A
-        // ‰ß‹‚É‚Á‚Ä‚¢‚½‚Æ‚µ‚Ä‚àŒÂ”‚ª0ˆÈ‰º
+        // ã‚¢ã‚¤ãƒ†ãƒ ã‚’ãã‚‚ãã‚‚æœªæ‰€æŒã‹ã€
+        // éå»ã«æŒã£ã¦ã„ãŸã¨ã—ã¦ã‚‚å€‹æ•°ãŒ0ä»¥ä¸‹
         if (entry == null || entry.Count <= 0)
         {
             return false;
@@ -124,8 +135,8 @@ public class InventoryManager : MonoBehaviour
         var entry = items.Find(
             x => x.Item.ItemName == itemName);
 
-        // ƒAƒCƒeƒ€‚ğ‚»‚à‚»‚à–¢Š‚©A
-        // ‰ß‹‚É‚Á‚Ä‚¢‚½‚Æ‚µ‚Ä‚àŒÂ”‚ª0ˆÈ‰º
+        // ã‚¢ã‚¤ãƒ†ãƒ ã‚’ãã‚‚ãã‚‚æœªæ‰€æŒã‹ã€
+        // éå»ã«æŒã£ã¦ã„ãŸã¨ã—ã¦ã‚‚å€‹æ•°ãŒ0ä»¥ä¸‹
         if (entry == null || entry.Count <= 0)
         {
             return false;
@@ -139,7 +150,7 @@ public class InventoryManager : MonoBehaviour
     public int Getcount(ItemData item)
     {
         var entry = items.Find(
-            x => x.Item = item);
+            x => x.Item == item);
         if (entry == null)
         {
             return 0;
