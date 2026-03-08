@@ -88,7 +88,7 @@ public class ChestInteract : MonoBehaviour,IInteractable
         // インベントリにこの宝箱に設定されているItemDataを追加
         if(InventoryManager.Instance != null)
         {
-            InventoryManager.Instance.Add(RewardItem);
+            InventoryManager.Instance.Add(RewardItem, 1);
         }
 
         // ダイアログに表示を指示します

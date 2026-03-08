@@ -200,6 +200,21 @@ public class BattleManager : MonoBehaviour
             DialogText.text = "どうする？";
         });
 
+        CreateButton(RootMenuRoot, "アイテム", () =>
+        {
+            if (!isPlayerTurn)
+            {
+                return;
+            }
+            if (!InventoryManager.Instance.
+            UseItem("ポーション(回復薬)"))
+            {
+                DialogText.text = "ポーションがない!";
+                return;
+            }
+            StartCoroutine(ExecuteUseItem());
+        });
+
         CreateButton(RootMenuRoot, "さくせん", () =>
           {
               if (!isPlayerTurn)
@@ -415,7 +430,30 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(EnemyTurn());
     }
 
-    private System.Collections.IEnumerator TryEscape()
+    private System.Collections.IEnumerator ExecuteUseItem()
+    {
+        isPlayerTurn = false;
+        float heal = InventoryManager.Instance.GetItemData(
+        "ポーション(回復薬)").Power;
+
+        // 回復させる
+        PlayerHP += heal;
+        if (PlayerHP > PlayerMaxHP)
+        {
+            PlayerHP = PlayerMaxHP;
+        }
+
+        DialogText.text = $"HPが {heal} かいふくした！";
+
+        UpdateUI();
+        yield return new WaitForSeconds(0.8f);
+
+        SetMenuState(BattleMenuState.Busy);
+
+        StartCoroutine(EnemyTurn());
+    }
+
+private System.Collections.IEnumerator TryEscape()
     {
         // Random.valueは0～1の間の値をランダムに返してくれます
         bool success = Random.value < 0.5f;
