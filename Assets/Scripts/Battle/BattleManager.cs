@@ -20,6 +20,7 @@ public class BattleManager : MonoBehaviour
         public GameObject Instance;
         public Animator Anim;
         public string DisplayName;
+        public EnemyUI UIInfo; // 追加: 個別UIへの参照
     }
 
     private List<ActiveEnemy> activeEnemies = new List<ActiveEnemy>();
@@ -29,6 +30,7 @@ public class BattleManager : MonoBehaviour
 
     [Header("Enemy Visual")]
     public Transform EnemyModelRoot;
+    public EnemyUI EnemyUIPrefab; // 追加: 各敵の頭上に生成するUIのプレハブ
 
     [Header("PlayerStatusとLevelSystemの参照")]
     public PlayerStatus PlayerStatus;
@@ -42,9 +44,10 @@ public class BattleManager : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI PlayerHPText;
+    public TextMeshProUGUI DialogText;
+    // 古い中央配置の EnemyNameText と EnemyHPText はInspectorで外すかそのまま配置しておき、コードから直接テキストを変えないようにします。
     public TextMeshProUGUI EnemyNameText;
     public TextMeshProUGUI EnemyHPText;
-    public TextMeshProUGUI DialogText;
 
     [Header("DQ Like Menu")]
     public GameObject RootMenuPanel;
@@ -143,14 +146,26 @@ public class BattleManager : MonoBehaviour
 
             string displayName = spawnCount > 1 ? $"{enemyData.DisplayName} {suffixes[i]}" : enemyData.DisplayName;
 
-            activeEnemies.Add(new ActiveEnemy
+            ActiveEnemy newEnemy = new ActiveEnemy
             {
                 BaseData = enemyData,
                 HP = enemyData.MaxHP,
                 Instance = modelInstance,
                 Anim = anim,
                 DisplayName = displayName
-            });
+            };
+
+            // 追加: 敵の頭上にUIを生成し、初期化
+            if (EnemyUIPrefab != null)
+            {
+                EnemyUI uiInstance = Instantiate(EnemyUIPrefab, modelInstance.transform);
+                // 敵の少し上に配置（スライムの大きさは1台なので、Y=1.0f くらいにする）
+                uiInstance.transform.localPosition = new Vector3(0, 1.0f, 0);
+                uiInstance.Setup(newEnemy);
+                newEnemy.UIInfo = uiInstance;
+            }
+
+            activeEnemies.Add(newEnemy);
         }
     }
 
@@ -637,30 +652,23 @@ private System.Collections.IEnumerator TryEscape()
 
         if (activeEnemies.Count > 0)
         {
-            string names = "";
-            string hps = "";
             for (int i = 0; i < activeEnemies.Count; i++)
             {
                 var enemy = activeEnemies[i];
-                if (enemy.HP > 0)
+                if (enemy.UIInfo != null)
                 {
-                    names += $"{enemy.DisplayName}\n";
-                    hps += $"HP:{enemy.HP}/{enemy.BaseData.MaxHP}\n";
-                }
-                else
-                {
-                    // 倒された敵はグレー表示など工夫可能だが、今回はそのまま0表記
-                    names += $"<color=#888888>{enemy.DisplayName}</color>\n";
-                    hps += $"<color=#888888>HP:0/{enemy.BaseData.MaxHP}</color>\n";
+                    enemy.UIInfo.UpdateUI();
                 }
             }
-            EnemyNameText.text = names.TrimEnd('\n');
-            EnemyHPText.text = hps.TrimEnd('\n');
+            
+            // 古い中央テキストはクリアする
+            if (EnemyNameText != null) EnemyNameText.text = "";
+            if (EnemyHPText != null) EnemyHPText.text = "";
         }
         else
         {
-            EnemyNameText.text = "Enemy";
-            EnemyHPText.text = "HP:0";
+            if (EnemyNameText != null) EnemyNameText.text = "";
+            if (EnemyHPText != null) EnemyHPText.text = "";
         }
     }
 

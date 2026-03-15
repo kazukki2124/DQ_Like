@@ -15,6 +15,15 @@ public class MenuButton : MonoBehaviour
     /// <param name="onClick"></param>
     public void Setup(string label,System.Action onClick)
     {
+        // 最低限のサイズを保証する（防衛的実装）
+        LayoutElement layout = GetComponent<LayoutElement>();
+        if (layout == null)
+        {
+            layout = gameObject.AddComponent<LayoutElement>();
+        }
+        layout.minWidth = 200f;
+        layout.minHeight = 60f;
+
         this.onClick = onClick;
         if(label != null)
         {
