@@ -7,6 +7,32 @@ public class PlayerState : MonoBehaviour
     [Header("基礎のステータス情報")]
     public PlayerStatus PlayerStatus;
 
+    [Header("現在の所持金")]
+    public int CurrentGold = 500;
+
+    /// <summary>
+    /// 所持金を増やす
+    /// </summary>
+    public void AddGold(int amount)
+    {
+        CurrentGold += amount;
+    }
+
+    /// <summary>
+    /// お金が足りるかのチェック
+    /// </summary>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    public bool ConsumeGold(int amount)
+    {
+        if(CurrentGold >= amount)
+        {
+            CurrentGold -= amount;
+            return true; //支払い出来ます
+        }
+        return false;   //支払い不可
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -74,4 +100,5 @@ public class PlayerState : MonoBehaviour
             return 0;
         }
     }
+
 }

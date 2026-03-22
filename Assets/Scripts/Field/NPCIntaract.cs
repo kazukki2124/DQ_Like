@@ -3,6 +3,15 @@ using UnityEngine.Events;
 
 public class NPCIntaract : MonoBehaviour, IInteractable
 {
+    public enum NPCType
+    {
+        Invalid = -1,
+        NPC,
+        Shop
+    }
+
+    public NPCType Type = NPCType.NPC;
+
     public DialogData FirstDialogData;
     public DialogData AfterDialogData;
 
@@ -14,12 +23,24 @@ public class NPCIntaract : MonoBehaviour, IInteractable
     /// </summary>
     public UnityEvent NPCEvent;
 
+
+    public UnityEvent NPCShopEvent;
+
     public void Interact()
     {
         // 既にダイアログ表示中なら「次へ進む」
         if(DialogUI.Instance != null &&
             DialogUI.Instance.TryNextIfOpen())
         {
+            return;
+        }
+
+        // 商人だったら、ダイアログと同時に、ShopCamvasを出す
+        if(Type == NPCType.Shop)
+        {
+            // ダイアログの表示を行います
+            DialogUI.Instance.Show(FirstDialogData);
+            NPCShopEvent?.Invoke();
             return;
         }
 

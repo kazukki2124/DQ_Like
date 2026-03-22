@@ -17,4 +17,7 @@ public class EquipmentData : ScriptableObject
     public float BonusAttack;
     public float BonusDefence;
 
+    [Header("Shop用のデータ")]
+    public int Price;   //値段
+
 }

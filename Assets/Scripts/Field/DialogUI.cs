@@ -139,9 +139,8 @@ public class DialogUI : MonoBehaviour
 
         NameText.text = string.Empty;
 
-        string[] itemLines_HasKey = new string[2];
-        itemLines_HasKey[0] = $"宝箱をみつけた！";
-        itemLines_HasKey[1] = $"しかし鍵がかかっているようだ・・・";
+        string[] itemLines_HasKey = new string[1];
+        itemLines_HasKey[0] = $"{simpleMessage}";
         currentLines = itemLines_HasKey;
         lineIndex = 0;
 

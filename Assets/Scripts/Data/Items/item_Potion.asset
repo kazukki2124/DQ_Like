@@ -17,3 +17,5 @@ MonoBehaviour:
   Category: 0
   Description: "\u4F53\u529B\u3092\u56DE\u5FA9\u3059\u308B\u6C34\u85AC"
   Icon: {fileID: 0}
+  Power: 20
+  Price: 10

@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
+
 public enum BattleMenuState
 {
     Root,   // たたかう/さくせん/にげる
@@ -344,7 +346,7 @@ public class BattleManager : MonoBehaviour
 
         if (allDead)
         {
-            Victory();
+            StartCoroutine(Victory());
             yield break;
         }
         else
@@ -422,7 +424,7 @@ public class BattleManager : MonoBehaviour
 
         if (allDead)
         {
-            Victory();
+            StartCoroutine(Victory());
             yield break;
         }
         else
@@ -578,7 +580,7 @@ private System.Collections.IEnumerator TryEscape()
 
         if (allDead)
         {
-            Victory();
+            StartCoroutine(Victory());
         }
         else
         { // そうじゃなかったら戦闘続行
@@ -672,7 +674,7 @@ private System.Collections.IEnumerator TryEscape()
         }
     }
 
-    private void Victory()
+    private IEnumerator Victory()
     {
         DialogText.text = "勝利！";
 
@@ -707,6 +709,19 @@ private System.Collections.IEnumerator TryEscape()
             DialogText.text +=
                 $"\n{totalExp} EXP かくとく！";
         }
+
+        yield return new WaitForSeconds(1f);
+
+        int gold = 0;
+        foreach(var enemy in activeEnemies)
+        {
+            gold += enemy.BaseData.GoldReward;
+        }
+        // データ上のゴールドを増やす
+        PlayerState.Instance.AddGold(gold);
+
+        // ユーザーにGoldが増えたことを通知する
+        DialogText.text = $"{gold} Gold　かくとく！";
 
         // Dieアニメーションは敵を倒した時に個別に再生するためここは削除または何もしない
 
