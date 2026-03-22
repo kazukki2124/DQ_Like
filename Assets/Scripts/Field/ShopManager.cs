@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 public class ShopManager : MonoBehaviour
 {
-    [Header("‚±‚Ì‚¨“X‚Å”„‚Á‚Ä‚¢‚éƒAƒCƒeƒ€")]
+    [Header("ã“ã®åº—ã§å£²ã£ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ")]
     public List<ItemData> ShopItem;
+    public List<EquipmentData> ShopEquipment;
 
     public void BuyItem(ItemData itemToBuy)
     {
@@ -13,17 +14,42 @@ public class ShopManager : MonoBehaviour
             return;
         }
 
+        // ãŠé‡‘ãŒè¶³ã‚Šã‚‹ã‹ãƒã‚§ãƒƒã‚¯
         if (PlayerState.Instance.ConsumeGold(itemToBuy.Price))
         {
-            // x•¥‚¢‚É¬Œ÷‚µ‚½‚çƒCƒ“ƒxƒ“ƒgƒŠƒ}ƒl[ƒWƒƒ[‚ÉƒAƒCƒeƒ€‚ğ’Ç‰Á‚·‚é
+            // ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã«ã‚¢ã‚¤ãƒ†ãƒ ã‚’è¿½åŠ 
             InventoryManager.Instance.Add(itemToBuy, 1);
-            DialogUI.Instance.ShowSimpleMessage($"{itemToBuy.ItemName} ‚ğ 1‚±@‚©‚Á‚½");
+            DialogUI.Instance.ShowSimpleMessage($"{itemToBuy.ItemName} ã‚’ 1å€‹è²·ã£ãŸ");
         }
         else
         {
-            DialogUI.Instance.ShowSimpleMessage("‚¨‚©‚Ë‚ª@‚½‚è‚Ü‚¹‚ñ");
+            DialogUI.Instance.ShowSimpleMessage("ãŠé‡‘ãŒè¶³ã‚Šã¾ã›ã‚“");
         }
-        // ‰½‚©ƒCƒ“ƒ^ƒ‰ƒNƒg‚µ‚½‚çAShop‚ÌCanvas‚ğ•Â‚¶‚é
+        
+        // è³¼å…¥å¾Œã€Shopã®Canvasã‚’é–‰ã˜ã‚‹
+        this.gameObject.SetActive(false);
+    }
+
+    public void BuyEquipment(EquipmentData equipmentToBuy)
+    {
+        if(equipmentToBuy == null)
+        {
+            return;
+        }
+
+        // ãŠé‡‘ãŒè¶³ã‚Šã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+        if (PlayerState.Instance.ConsumeGold(equipmentToBuy.Price))
+        {
+            // ã‚¤ãƒ³ãƒ™ãƒ³ãƒˆãƒªãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã«è£…å‚™ã‚’è¿½åŠ 
+            InventoryManager.Instance.Add(equipmentToBuy, 1);
+            DialogUI.Instance.ShowSimpleMessage($"{equipmentToBuy.DisplayName} ã‚’ 1ã¤è²·ã£ãŸ \n{equipmentToBuy.DisplayName}ã‚’ãã†ã³ã—ãŸ");
+        }
+        else
+        {
+            DialogUI.Instance.ShowSimpleMessage("ãŠé‡‘ãŒè¶³ã‚Šã¾ã›ã‚“");
+        }
+        
+        // è³¼å…¥å¾Œã€Shopã®Canvasã‚’é–‰ã˜ã‚‹
         this.gameObject.SetActive(false);
     }
 }

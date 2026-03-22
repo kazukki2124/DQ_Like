@@ -7,8 +7,10 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance;
 
     // Listという増減できる配列の宣言を行います
-    private List<InventryEntry> items =
-        new List<InventryEntry>();
+    private List<InventryEntry> items = new List<InventryEntry>();
+    
+    // 装備品用のリストを追加
+    private List<EquipmentEntry> equipments = new List<EquipmentEntry>();
 
     private void Awake()
     {
@@ -17,12 +19,11 @@ public class InventoryManager : MonoBehaviour
         {
             Instance = this;
             // シーンの破棄に巻き込まれないようにする
-            // 設定の書き方
             DontDestroyOnLoad(gameObject);
         }
         else
         {
-            // 管理するマネージャーが複数いたら困るので
+            // 管理するマネージャーが複数あったら困るので
             // 絶対に一つだけ存在するようにする
             Destroy(gameObject);
         }
@@ -31,130 +32,147 @@ public class InventoryManager : MonoBehaviour
     /// <summary>
     /// インベントリにアイテムを追加する
     /// </summary>
-    /// <param name="item"></param>
     public void Add(ItemData item, int amount)
     {
         if(item == null || amount <= 0)
         {
             return;
         }
-        // 追加されたアイテムを、現在持っているアイテムの
-        // 中から調べる
-        var entry = items.Find(
-            x => x.Item == item);
+        var entry = items.Find(x => x.Item == item);
 
-        // すでに取得しているアイテムだった場合
         if(entry != null)
         {
-            // amountで設定されている個数を追加します
             entry.Count += amount;
         }
         else
         {
-
-            // アイテムデータをインベントリーに追加
             items.Add(new InventryEntry
             {
                 Item = item,
                 Count = amount
             });
         }
-
         Debug.Log($"[インベントリー]アイテム追加:{item.ItemName}");
+    }
+
+    /// <summary>
+    /// インベントリに装備品を追加する
+    /// </summary>
+    public void Add(EquipmentData equipment, int amount)
+    {
+        if (equipment == null || amount <= 0)
+        {
+            return;
+        }
+        var entry = equipments.Find(x => x.Equipment == equipment);
+
+        if (entry != null)
+        {
+            entry.Count += amount;
+        }
+        else
+        {
+            equipments.Add(new EquipmentEntry
+            {
+                Equipment = equipment,
+                Count = amount
+            });
+        }
+        Debug.Log($"[インベントリー]装備追加:{equipment.DisplayName}");
     }
 
     /// <summary>
     /// 引数のアイテムを持っているかどうか
     /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
     public bool Has(ItemData item)
     {
-        // 引数のアイテムを、現在持っているアイテムの
-        // 中から調べる
-        var entry = items.Find(
-            x => x.Item == item);
+        var entry = items.Find(x => x.Item == item);
+        return entry != null;
+    }
+
+    /// <summary>
+    /// 引数の装備品を持っているかどうか
+    /// </summary>
+    public bool Has(EquipmentData equipment)
+    {
+        var entry = equipments.Find(x => x.Equipment == equipment);
         return entry != null;
     }
 
     /// <summary>
     /// アイテムの名称でitemDataを取得する
     /// </summary>
-    /// <param name="itemName"></param>
-    /// <returns></returns>
     public ItemData GetItemData(string itemName)
     {
-        var entry = items.Find(
-            x => x.Item.ItemName == itemName);
+        var entry = items.Find(x => x.Item.ItemName == itemName);
+        if (entry == null) return null;
         return entry.Item;
     }
 
     /// <summary>
     /// ほかのclassからitemを見たいときに呼ぶ
     /// </summary>
-    /// <returns></returns>
     public IReadOnlyList<InventryEntry> GetAll()
     {
         return items;
     }
 
     /// <summary>
+    /// ほかのclassから装備品を見たいときに呼ぶ
+    /// </summary>
+    public IReadOnlyList<EquipmentEntry> GetAllEquipments()
+    {
+        return equipments;
+    }
+
+    /// <summary>
     /// カテゴリ別にアイテムを取得する
     /// </summary>
-    /// <param name="category"></param>
-    /// <returns></returns>
     public List<InventryEntry> GetItemsByCategory(ItemData.ItemCategory category)
     {
         return items.FindAll(x => x.Item.Category == category);
     }
 
-
     /// <summary>
     /// アイテムを使用する
     /// </summary>
-    /// <returns></returns>
     public bool UseItem(ItemData item)
     {
-        var entry = items.Find(
-            x => x.Item == item);
+        var entry = items.Find(x => x.Item == item);
 
-        // アイテムをそもそも未所持か、
-        // 過去に持っていたとしても個数が0以下
         if (entry == null || entry.Count <= 0)
         {
             return false;
         }
 
         entry.Count--;
-
         return true;
     }
 
     public bool UseItem(string itemName)
     {
-        var entry = items.Find(
-            x => x.Item.ItemName == itemName);
+        var entry = items.Find(x => x.Item.ItemName == itemName);
 
-        // アイテムをそもそも未所持か、
-        // 過去に持っていたとしても個数が0以下
         if (entry == null || entry.Count <= 0)
         {
             return false;
         }
 
         entry.Count--;
-
         return true;
     }
 
     public int Getcount(ItemData item)
     {
-        var entry = items.Find(
-            x => x.Item == item);
-        if (entry == null)
-        {
-            return 0;
-        }
+        var entry = items.Find(x => x.Item == item);
+        if (entry == null) return 0;
+        return entry.Count;
+    }
+
+    public int Getcount(EquipmentData equipment)
+    {
+        var entry = equipments.Find(x => x.Equipment == equipment);
+        if (entry == null) return 0;
         return entry.Count;
     }
 }

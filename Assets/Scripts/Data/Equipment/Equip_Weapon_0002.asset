@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4392a06d9985c8a419bba148f7cd1746, type: 3}
-  m_Name: DialogData_0
+  m_Script: {fileID: 11500000, guid: ed31d71f69cbbc4448ef31978014bf0a, type: 3}
+  m_Name: Equip_Weapon_0002
   m_EditorClassIdentifier: 
-  Speaker: "\u5546\u4EBA"
-  MessageLines:
-  - "\u3053\u3093\u306B\u3061\u306F"
-  - "\u306A\u306B\u3092\u304A\u3082\u3068\u3081\u3067\u3059\u304B\uFF1F"
-  ShowYesNo: 0
-  SetFlagOnYes: 
+  DisplayName: "\u3053\u3046\u3066\u3064\u306E\u305F\u3044\u3051\u3093"
+  Type: 0
+  BonusHp: 0
+  BonusAttack: 20
+  BonusDefence: 0
+  Price: 100
