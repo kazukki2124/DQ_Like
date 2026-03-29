@@ -48,6 +48,8 @@ public class EnemySymbol : MonoBehaviour
         }
     }
 
+    public int[] NextEnemyIDs;
+
     /// <summary>
     /// 侵入判定でPlayerが入ってきたときに処理を行う
     /// </summary>
@@ -59,6 +61,18 @@ public class EnemySymbol : MonoBehaviour
         {
             return;
         }
+
+        // 配列が空または未設定の場合のエラーを防ぐためのセーフティ
+        if (NextEnemyIDs == null || NextEnemyIDs.Length == 0)
+        {
+            Debug.LogError($"{gameObject.name} にエンカウント用の敵ID (NextEnemyIDs) が設定されていません。Inspectorで設定してください。");
+            return;
+        }
+
+        // 登録されているIDの中からランダムに1つ選ぶ
+        int randomIndex = Random.Range(0, NextEnemyIDs.Length);
+        BattleManager.NextEnemyID = NextEnemyIDs[randomIndex];
+        
         SceneManager.LoadScene(BattleSceneName);
     }
 }

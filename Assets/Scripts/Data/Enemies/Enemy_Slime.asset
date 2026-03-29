@@ -22,4 +22,11 @@ MonoBehaviour:
   ModelRotation: {x: 0, y: 180, z: 0}
   ModelScale: {x: 100, y: 100, z: 100}
   ExpReward: 5
+  GoldReward: 10
   Description: 
+  IsRandomCount: 1
+  FixedCount: 1
+  MinCount: 2
+  MaxCount: 3
+  IsBoss: 0
+  AttackSE: {fileID: 8300000, guid: f9537ba22e054b84fa28facda96ff148, type: 3}

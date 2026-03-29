@@ -51,6 +51,14 @@ public class BattleManager : MonoBehaviour
     public TextMeshProUGUI EnemyNameText;
     public TextMeshProUGUI EnemyHPText;
 
+    [Header("Audio")]
+    public AudioClip BattleBGM;
+    public AudioClip BossBattleBGM; // 追加：ボス戦用BGM
+    public AudioClip AttackSE;
+    public AudioClip CommandSelectSE;
+    private AudioSource bgmSource;
+    private AudioSource seSource;
+
     [Header("DQ Like Menu")]
     public GameObject RootMenuPanel;
     public Transform RootMenuRoot;
@@ -65,8 +73,31 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
+        // 音楽等の初期化
+        bgmSource = gameObject.AddComponent<AudioSource>();
+        seSource = gameObject.AddComponent<AudioSource>();
+
         SetupEnemyFromDB();
         ApplyPlayerStatus();
+
+        // ボスがいるかどうかでBGMを切り替える
+        bool isBossPresent = false;
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy.BaseData != null && enemy.BaseData.IsBoss)
+            {
+                isBossPresent = true;
+                break;
+            }
+        }
+
+        AudioClip bgmToPlay = isBossPresent && BossBattleBGM != null ? BossBattleBGM : BattleBGM;
+        if (bgmToPlay != null)
+        {
+            bgmSource.clip = bgmToPlay;
+            bgmSource.loop = true;
+            bgmSource.Play();
+        }
 
         UpdateUI();
 
@@ -127,8 +158,17 @@ public class BattleManager : MonoBehaviour
         }
         activeEnemies.Clear();
 
-        int spawnCount = Random.Range(1, 4); // 1〜3体をランダム生成
-        string[] suffixes = { "A", "B", "C" };
+        int spawnCount = 1;
+        if (enemyData.IsRandomCount)
+        {
+            spawnCount = Random.Range(enemyData.MinCount, enemyData.MaxCount + 1);
+        }
+        else
+        {
+            spawnCount = enemyData.FixedCount;
+        }
+        
+        string[] suffixes = { "A", "B", "C", "D", "E", "F", "G", "H" };
         
         // 敵の間隔を少し広めに取る（2.0f -> 3.5fなどに調整）
         float spacingX = 3.5f; 
@@ -260,7 +300,7 @@ public class BattleManager : MonoBehaviour
             {
                 return;
             }
-            StartCoroutine(ExecuteAttack());
+            BuildTargetMenu();
         });
         CreateButton(FightMenuRoot, "じゅもん", () =>
         {
@@ -293,29 +333,50 @@ public class BattleManager : MonoBehaviour
         });
     }
 
+    private void BuildTargetMenu()
+    {
+        ClearChildren(FightMenuRoot);
+
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy.HP <= 0) continue;
+
+            var targetEnemy = enemy; // ラムダ式キャプチャ用
+            CreateButton(FightMenuRoot, targetEnemy.DisplayName, () =>
+            {
+                if (!isPlayerTurn) return;
+                StartCoroutine(ExecuteAttack(targetEnemy));
+            });
+        }
+
+        CreateButton(FightMenuRoot, "もどる", () =>
+        {
+            BuildFightMenu();
+            DialogText.text = "どうする！？";
+        });
+
+        DialogText.text = "だれを　こうげきする？";
+    }
+
     // こうげきの処理
-    private System.Collections.IEnumerator ExecuteAttack()
+    private System.Collections.IEnumerator ExecuteAttack(ActiveEnemy target)
     {
         isPlayerTurn = false;
         SetMenuState(BattleMenuState.Busy);
 
         DialogText.text = "こうげき";
         yield return new WaitForSeconds(0.5f);
+
+        // 攻撃音を鳴らす
+        if (AttackSE != null && seSource != null)
+        {
+            seSource.PlayOneShot(AttackSE);
+        }
+
         // 小数点切り上げでプレイヤーの攻撃力を計算する
         var damage = Mathf.Ceil(Random.Range(PlayerAttackMin, PlayerAttackMax));
 
-        // 生存している最初の敵を取得
-        ActiveEnemy target = null;
-        foreach (var enemy in activeEnemies)
-        {
-            if (enemy.HP > 0)
-            {
-                target = enemy;
-                break;
-            }
-        }
-
-        if (target != null)
+        if (target != null && target.HP > 0)
         {
             DialogText.text = $"{target.DisplayName}に {damage} ダメージ！";
             target.HP -= damage;
@@ -493,6 +554,14 @@ private System.Collections.IEnumerator TryEscape()
     /// <summary>
     /// Buttonを生成
     /// </summary>
+    private void PlayCommandSE()
+    {
+        if (CommandSelectSE != null && seSource != null)
+        {
+            seSource.PlayOneShot(CommandSelectSE);
+        }
+    }
+
     void CreateButton(Transform root, string label,
         System.Action onClick)
     {
@@ -501,7 +570,11 @@ private System.Collections.IEnumerator TryEscape()
             return;
         }
         var btn = Instantiate(MenuButtonPrefab, root);
-        btn.Setup(label, onClick);
+        btn.Setup(label, () => 
+        {
+            PlayCommandSE();
+            if (onClick != null) onClick();
+        });
     }
 
     void ClearChildren(Transform root)
@@ -600,6 +673,12 @@ private System.Collections.IEnumerator TryEscape()
             if (enemy.Anim != null)
             {
                 enemy.Anim.SetTrigger("Attack");
+            }
+
+            // 敵固有の攻撃音を鳴らす
+            if (enemy.BaseData != null && enemy.BaseData.AttackSE != null && seSource != null)
+            {
+                seSource.PlayOneShot(enemy.BaseData.AttackSE);
             }
 
             yield return new WaitForSeconds(1f);
@@ -725,7 +804,28 @@ private System.Collections.IEnumerator TryEscape()
 
         // Dieアニメーションは敵を倒した時に個別に再生するためここは削除または何もしない
 
+        bool isBoss = false;
+        foreach (var enemy in activeEnemies)
+        {
+            // ボスかどうかの判定を追加
+            if (enemy.BaseData != null && enemy.BaseData.IsBoss)
+            {
+                isBoss = true;
+                break;
+            }
+        }
+
+        if (isBoss)
+        {
+            DialogText.text = $"ボスをたおした！";
+            yield return new WaitForSeconds(1f);
+            Debug.Log("エンディング");
+            SceneManager.LoadScene("ResultScene");
+        }
+
         Invoke(nameof(ReturnToField), 2f);
+
+        
     }
     private void GameOver()
     {

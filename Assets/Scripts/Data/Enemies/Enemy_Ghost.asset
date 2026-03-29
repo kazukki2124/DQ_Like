@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyID: 4
   DisplayName: "\u304A\u3070\u3051"
-  MaxHP: 25
+  MaxHP: 30
   AttackMin: 4
   AttackMax: 7
   ModelPrefab: {fileID: 1000010538092382, guid: e067a1df356d3e84bb3f15113b018f67, type: 3}
@@ -22,4 +22,11 @@ MonoBehaviour:
   ModelRotation: {x: 0, y: 180, z: 0}
   ModelScale: {x: 100, y: 100, z: 100}
   ExpReward: 5
+  GoldReward: 10
   Description: 
+  IsRandomCount: 1
+  FixedCount: 1
+  MinCount: 1
+  MaxCount: 2
+  IsBoss: 0
+  AttackSE: {fileID: 8300000, guid: 455f4899befbfd3419a2b99b04b8cf1e, type: 3}

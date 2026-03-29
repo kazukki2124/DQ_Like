@@ -14,12 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyID: 1
   DisplayName: "\u30B3\u30A6\u30E2\u30EA"
-  MaxHP: 15
+  MaxHP: 12
   AttackMin: 2
   AttackMax: 5
   ModelPrefab: {fileID: 1000013827195344, guid: d82532fc4fd80bf4097d29efd331a0ff, type: 3}
   ModelPosition: {x: 0, y: 0, z: 2}
   ModelRotation: {x: 0, y: 180, z: 0}
-  ModelScale: {x: 1, y: 1, z: 1}
+  ModelScale: {x: 40, y: 40, z: 40}
   ExpReward: 5
+  GoldReward: 10
   Description: 
+  IsRandomCount: 1
+  FixedCount: 1
+  MinCount: 2
+  MaxCount: 4
+  IsBoss: 0
+  AttackSE: {fileID: 8300000, guid: 886d46fdd4925904fbf18ebb4372fe09, type: 3}

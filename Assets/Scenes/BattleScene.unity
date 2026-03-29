@@ -2034,6 +2034,10 @@ MonoBehaviour:
   DialogText: {fileID: 1425763572}
   EnemyNameText: {fileID: 628758247}
   EnemyHPText: {fileID: 1003110763}
+  BattleBGM: {fileID: 8300000, guid: ed3d92a79e4c8fa47b79d175c5e9a379, type: 3}
+  BossBattleBGM: {fileID: 8300000, guid: 23b971407e6eb444dad748a097817542, type: 3}
+  AttackSE: {fileID: 8300000, guid: a01ce556d84317d4fac6056f17c8c109, type: 3}
+  CommandSelectSE: {fileID: 8300000, guid: 8c9f6eaa834177b4f96b97d8962e4fa8, type: 3}
   RootMenuPanel: {fileID: 1236653127}
   RootMenuRoot: {fileID: 1236653128}
   FightMenuPanel: {fileID: 383315464}

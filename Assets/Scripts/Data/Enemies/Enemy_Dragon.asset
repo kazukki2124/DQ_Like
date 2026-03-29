@@ -15,6 +15,18 @@ MonoBehaviour:
   EnemyID: 5
   DisplayName: "\u30C9\u30E9\u30B4\u30F3"
   MaxHP: 100
-  AttackMin: 15
-  AttackMax: 25
+  AttackMin: 1
+  AttackMax: 1
+  ModelPrefab: {fileID: 8936203381113677786, guid: 4238379d9436d4c4c83c439c032e3c2b, type: 3}
+  ModelPosition: {x: 0, y: 0, z: 2}
+  ModelRotation: {x: 0, y: 180, z: 0}
+  ModelScale: {x: 1, y: 1, z: 1}
+  ExpReward: 5
+  GoldReward: 10
   Description: 
+  IsRandomCount: 0
+  FixedCount: 1
+  MinCount: 0
+  MaxCount: 0
+  IsBoss: 1
+  AttackSE: {fileID: 8300000, guid: a7374cf9b38aabc48898722325c95438, type: 3}

@@ -1,52 +1,65 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// RequireComponent(typeof(Hogehoge))‚Í
-/// •K{‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ‹­§o—ˆ‚é
+/// RequireComponent(typeof(Hogehoge))ã¯
+/// å¿…é ˆã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å¼·åˆ¶å‡ºæ¥ã‚‹
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
     /// <summary>
-    /// ˆÚ“®‘¬“x(m/s)
+    /// ç§»å‹•é€Ÿåº¦(m/s)
     /// </summary>
     public float MoveSpeed = 4f;
 
     /// <summary>
-    /// ‰ñ“]‘¬“x(“x/•b)
+    /// å›è»¢é€Ÿåº¦(åº¦/ç§’)
     /// </summary>
     public float RotateSpeed = 540f;
 
     public float Gravity = -9.81f;
 
     /// <summary>
-    /// ƒJƒƒ‰Šî€ˆÚ“®‚Ég‚¤
-    /// (–¢İ’è‚È‚çƒvƒŒƒCƒ„[Šî€)
+    /// ã‚«ãƒ¡ãƒ©åŸºæº–ç§»å‹•ã«ä½¿ã†
+    /// (æœªè¨­å®šãªã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åŸºæº–)
     /// </summary>
     public Transform CameraTransform;
 
     public StatusUI StatusUI;
+
+    [Header("Audio")]
+    public AudioClip FootstepSE;
+    private AudioSource footstepSource;
 
     private CharacterController controller;
 
     private Vector3 velocity;
 
     /// <summary>
-    /// InputSystem‚©‚ç”½‰f‚³‚ê‚½’l
+    /// InputSystemã‹ã‚‰åæ˜ ã•ã‚ŒãŸå€¤
     /// </summary>
     private Vector2 moveInput;
 
     /// <summary>
-    /// Start‚æ‚è‘O‚ÉÀs‚³‚ê‚éˆ—‚ğ‘‚­êŠ
+    /// Startã‚ˆã‚Šå‰ã«å®Ÿè¡Œã•ã‚Œã‚‹å‡¦ç†ã‚’æ›¸ãå ´æ‰€
     /// </summary>
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+
+        // è¶³éŸ³ç”¨ã®AudioSourceã‚’è¨­å®š
+        if (FootstepSE != null)
+        {
+            footstepSource = gameObject.AddComponent<AudioSource>();
+            footstepSource.clip = FootstepSE;
+            footstepSource.loop = true;
+            footstepSource.playOnAwake = false;
+        }
     }
 
-    // –ˆƒtƒŒ[ƒ€Às‚³‚ê‚éˆ—‚ğ‘‚­êŠ
+    // æ¯ãƒ•ãƒ¬ãƒ¼ãƒ å®Ÿè¡Œã•ã‚Œã‚‹å‡¦ç†ã‚’æ›¸ãå ´æ‰€
     void Update()
     {
-        // ƒ_ƒCƒAƒƒO‚ªOpen‚µ‚Ä‚¢‚½‚ç‰½‚à‚µ‚È‚¢
+        // ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãŒOpenã—ã¦ã„ãŸã‚‰ä½•ã‚‚ã—ãªã„
         if (GameState.IsDialogOpen)
         {
             return;
@@ -54,11 +67,25 @@ public class PlayerController : MonoBehaviour
 
         Move();
         ApplyGravity();
+
+        // ç§»å‹•çŠ¶æ…‹ã«å¿œã˜ã¦è¶³éŸ³ã‚’å†ç”Ÿãƒ»åœæ­¢
+        if (footstepSource != null)
+        {
+            bool isMoving = moveInput.sqrMagnitude > 0.01f && controller.isGrounded;
+            if (isMoving && !footstepSource.isPlaying)
+            {
+                footstepSource.Play();
+            }
+            else if (!isMoving && footstepSource.isPlaying)
+            {
+                footstepSource.Stop();
+            }
+        }
     }
 
     /// <summary>
-    /// InputSystem‚©‚çMoveŒü‚¯‚É“ü—Í‚³‚ê‚½’l‚ğˆ—‚·‚é
-    /// ƒƒ\ƒbƒh
+    /// InputSystemã‹ã‚‰Moveå‘ã‘ã«å…¥åŠ›ã•ã‚ŒãŸå€¤ã‚’å‡¦ç†ã™ã‚‹
+    /// ãƒ¡ã‚½ãƒƒãƒ‰
     /// </summary>
     /// <param name="value"></param>
     public void OnMove(InputValue value)
@@ -86,7 +113,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 move;
 
-        // ƒJƒƒ‰‚ªİ’è‚³‚ê‚Ä‚¢‚ê‚ÎƒJƒƒ‰Šî€‚ÌˆÚ“®
+        // ã‚«ãƒ¡ãƒ©ãŒè¨­å®šã•ã‚Œã¦ã„ã‚Œã°ã‚«ãƒ¡ãƒ©åŸºæº–ã®ç§»å‹•
         if(CameraTransform != null)
         {
             Vector3 camForward = CameraTransform.forward;
@@ -95,43 +122,43 @@ public class PlayerController : MonoBehaviour
             camForward.y = 0;
             camRight.y = 0;
 
-            // Normalize‚Í0`1‚Ì’l‚É³‹K‰»‚µ‚Ä‚­‚ê‚Ü‚·
+            // Normalizeã¯0ï½1ã®å€¤ã«æ­£è¦åŒ–ã—ã¦ãã‚Œã¾ã™
             camForward.Normalize();
             camRight.Normalize();
 
-            // —á‚¦‚ÎAƒL[‚ğ‰Ÿ‚³‚ê‚½‚çmoveinput‚Ì’l‚Í
-            // (-1,0)‚É‚È‚è‚Ü‚·B
-            // ‚»‚ê‚ğƒJƒƒ‰‚Ì‰æŠp‚©‚çŒ©‚Ä¶(x²-1‚Ì•ûŒü)
-            // ‚Æ‚¢‚¤ƒf[ƒ^‚É•ÏŠ·‚µ‚Ü‚·
+            // ä¾‹ãˆã°Aã‚­ãƒ¼ã‚’æŠ¼ã•ã‚ŒãŸã‚‰moveinputã®å€¤ã¯
+            // (-1,0)ã«ãªã‚Šã¾ã™ã€‚
+            // ãã‚Œã‚’ã‚«ãƒ¡ãƒ©ã®ç”»è§’ã‹ã‚‰è¦‹ã¦å·¦(xè»¸-1ã®æ–¹å‘)
+            // ã¨ã„ã†ãƒ‡ãƒ¼ã‚¿ã«å¤‰æ›ã—ã¾ã™
             move = camForward * moveInput.y +
                    camRight * moveInput.x;
         }
         else
         {
-            // –¢İ’è‚É‚ÍƒvƒŒƒCƒ„[Šî€‚ÅˆÚ“®
+            // æœªè¨­å®šæ™‚ã«ã¯ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åŸºæº–ã§ç§»å‹•
             move = transform.forward * moveInput.y +
                    transform.right * moveInput.x;
         }
 
         if(move.sqrMagnitude > 1f)
         {
-            // x,y,z‚ÌŠe’l‚ğ0`1‚Ì’l‚Éû‚ß‚Ü‚·
+            // x,y,zã®å„å€¤ã‚’0ï½1ã®å€¤ã«åã‚ã¾ã™
             move.Normalize();
         }
 
         controller.Move(move * MoveSpeed * Time.deltaTime);
 
-        // “ü—Í‚ª‚ ‚é‚ÍˆÚ“®•û–@‚É‰ñ“]‚³‚¹‚é
+        // å…¥åŠ›ãŒã‚ã‚‹æ™‚ã¯ç§»å‹•æ–¹æ³•ã«å›è»¢ã•ã›ã‚‹
         if (move.sqrMagnitude > 0.01f)
         {
-            // Œü‚­æ‚Ì‰ñ“]î•ñ
+            // å‘ãå…ˆã®å›è»¢æƒ…å ±
             Quaternion targetRot =
                 Quaternion.LookRotation(move, Vector3.up);
-            // Player‚ÉŒü‚­æ‚ğİ’è‚·‚é
+            // Playerã«å‘ãå…ˆã‚’è¨­å®šã™ã‚‹
             transform.rotation = Quaternion.RotateTowards(
-                transform.rotation, // Player‚Ì‰ñ“]‚ğ
-                targetRot, // Œü‚­æ‚Ì‰ñ“]‚É
-                RotateSpeed * Time.deltaTime // RotateSpeed‚ÅŒü‚­
+                transform.rotation, // Playerã®å›è»¢ã‚’
+                targetRot, // å‘ãå…ˆã®å›è»¢ã«
+                RotateSpeed * Time.deltaTime // RotateSpeedã§å‘ã
                 );
         }
     }
@@ -140,7 +167,7 @@ public class PlayerController : MonoBehaviour
     {
         if(controller.isGrounded && velocity.y < 0f)
         {
-            velocity.y = -1f; // ’n–Ê‚É‹z‚¢‚Â‚¯‚é
+            velocity.y = -1f; // åœ°é¢ã«å¸ã„ã¤ã‘ã‚‹
         }
 
         velocity.y += Gravity * Time.deltaTime;
